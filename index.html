@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospitality Intelligence · Relaxia Beverly Park</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js" crossorigin></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #EEF2F7; }
+    button { font-family: inherit; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+const { useState, useMemo } = React;
+
+
+
+const C = {
+  navy:'#0D2137', teal:'#007A94', tealL:'#009BB8',
+  amber:'#D97706', red:'#DC2626', green:'#059669',
+  bg:'#EEF2F7', card:'#FFFFFF', border:'#D1D9E6',
+  tp:'#0D2137', ts:'#4A6080', tm:'#8BA0B4',
+};
+const lvlColor={target:'#007A94',direct:'#0891B2',aspiracional:'#6D28D9',benchmark:'#374151'};
+
+const allPrices=[
+  {code:'WKK',name:'Servatur Waikiki',         lvl:'aspiracional',stars:4,date:'2026-05-08',nights:7,price:228.92,rack:null,discount:null,regime:'AI',scarcity:null,freeCancellation:true},
+  {code:'VRL',name:'Hotel LIVVO Veril Playa',  lvl:'direct',      stars:3,date:'2026-05-22',nights:7,price:68.37, rack:null,discount:null,regime:'B&B',scarcity:'3 hab.',freeCancellation:true},
+  {code:'WKK',name:'Servatur Waikiki',         lvl:'aspiracional',stars:4,date:'2026-05-22',nights:7,price:81.12, rack:null,discount:null,regime:'AI', scarcity:null,freeCancellation:true},
+  {code:'GRF',name:'Hotel Green Field',        lvl:'direct',      stars:3,date:'2026-05-22',nights:7,price:117.52,rack:null,discount:null,regime:'B&B',scarcity:null,freeCancellation:true},
+  {code:'GCP',name:'Gran Canaria Princess',    lvl:'aspiracional',stars:4,date:'2026-05-22',nights:7,price:147.63,rack:null,discount:null,regime:'B&B',scarcity:null,freeCancellation:true},
+  {code:'RBP',name:'Relaxia Beverly Park',     lvl:'target',      stars:3,date:'2026-05-22',nights:7,price:154.88,rack:null,discount:null,regime:'AI', scarcity:null,freeCancellation:false},
+  {code:'ABC',name:'Abora Continental',        lvl:'aspiracional',stars:4,date:'2026-05-22',nights:7,price:206.97,rack:null,discount:null,regime:'AI', scarcity:null,freeCancellation:true},
+  {code:'SSB',name:'Seaside Sandy Beach',      lvl:'benchmark',   stars:4,date:'2026-05-22',nights:7,price:244.00,rack:null,discount:null,regime:'B&B',scarcity:null,freeCancellation:true},
+  {code:'ABV',name:'Abora Buenaventura',       lvl:'aspiracional',stars:4,date:'2026-05-29',nights:2,price:116.32,rack:166.17,discount:'Oferta limitada',regime:'AI',scarcity:null,freeCancellation:true},
+  {code:'WKK',name:'Servatur Waikiki',         lvl:'aspiracional',stars:4,date:'2026-05-29',nights:2,price:123.26,rack:null,discount:null,regime:'AI',scarcity:null,freeCancellation:true},
+  {code:'RPP',name:'Hotel Riu Papayas',        lvl:'benchmark',   stars:4,date:'2026-05-29',nights:2,price:195.91,rack:301.40,discount:'Oferta viaje',regime:'AI',scarcity:'3 hab.',freeCancellation:true},
+  {code:'RPM',name:'Riu Palace Maspalomas',    lvl:'benchmark',   stars:5,date:'2026-05-29',nights:2,price:244.86,rack:376.71,discount:'Oferta viaje',regime:'AI',scarcity:'3 hab.',freeCancellation:true},
+  {code:'ABV',name:'Abora Buenaventura',       lvl:'aspiracional',stars:4,date:'2026-09-04',nights:2,price:157.39,rack:224.84,discount:'Oferta limitada',regime:'AI',scarcity:null,freeCancellation:true},
+  {code:'WKK',name:'Servatur Waikiki',         lvl:'aspiracional',stars:4,date:'2026-09-04',nights:2,price:163.96,rack:null,discount:null,regime:'AI',scarcity:null,freeCancellation:true},
+  {code:'ABC',name:'Abora Continental',        lvl:'aspiracional',stars:4,date:'2026-09-04',nights:2,price:244.80,rack:326.40,discount:'Bonus ahorro',regime:'AI',scarcity:null,freeCancellation:true},
+  {code:'VRL',name:'Hotel LIVVO Veril Playa',  lvl:'direct',      stars:3,date:'2026-09-04',nights:7,price:86.21, rack:95.10, discount:'Oferta viaje',regime:'B&B',scarcity:null,freeCancellation:true},
+  {code:'WKK',name:'Servatur Waikiki',         lvl:'aspiracional',stars:4,date:'2026-09-04',nights:7,price:102.51,rack:113.08,discount:'Oferta viaje',regime:'AI', scarcity:null,freeCancellation:true},
+  {code:'GRF',name:'Hotel Green Field',        lvl:'direct',      stars:3,date:'2026-09-04',nights:7,price:117.52,rack:null, discount:null,regime:'B&B',scarcity:null,freeCancellation:true},
+  {code:'GCP',name:'Gran Canaria Princess',    lvl:'aspiracional',stars:4,date:'2026-09-04',nights:7,price:154.17,rack:170.07,discount:'Oferta viaje',regime:'B&B',scarcity:'6 hab.',freeCancellation:true},
+  {code:'ABV',name:'Abora Buenaventura',       lvl:'aspiracional',stars:4,date:'2026-09-04',nights:7,price:157.39,rack:224.84,discount:'Oferta limitada',regime:'AI',scarcity:null,freeCancellation:true},
+  {code:'BES',name:'Bull Escorial & Spa',      lvl:'aspiracional',stars:4,date:'2026-09-04',nights:7,price:178.59,rack:197.00,discount:'Oferta viaje',regime:'AI', scarcity:'5 hab.',freeCancellation:true},
+  {code:'RBP',name:'Relaxia Beverly Park',     lvl:'target',      stars:3,date:'2026-09-04',nights:7,price:182.11,rack:200.88,discount:'Oferta viaje',regime:'AI', scarcity:null,freeCancellation:false},
+  {code:'SSB',name:'Seaside Sandy Beach',      lvl:'benchmark',   stars:4,date:'2026-09-04',nights:7,price:222.00,rack:null, discount:null,regime:'B&B',scarcity:null,freeCancellation:true},
+  {code:'ABC',name:'Abora Continental',        lvl:'aspiracional',stars:4,date:'2026-09-04',nights:7,price:230.04,rack:306.72,discount:'Bonus ahorro',regime:'AI', scarcity:null,freeCancellation:true},
+  {code:'RPP',name:'Hotel Riu Papayas',        lvl:'benchmark',   stars:4,date:'2026-09-04',nights:7,price:242.50,rack:373.08,discount:'Oferta viaje',regime:'AI', scarcity:'4 hab.',freeCancellation:true},
+  {code:'RPM',name:'Riu Palace Maspalomas',    lvl:'benchmark',   stars:5,date:'2026-09-04',nights:7,price:274.00,rack:421.54,discount:'Oferta viaje',regime:'AI', scarcity:'1 hab.',freeCancellation:true},
+];
+
+const dateOptions=[
+  {label:'22 mayo · 7 noches',date:'2026-05-22',nights:7},
+  {label:'29 mayo · 2 noches',date:'2026-05-29',nights:2},
+  {label:'4 sep · 2 noches',  date:'2026-09-04',nights:2},
+  {label:'4 sep · 7 noches',  date:'2026-09-04',nights:7},
+];
+
+const props=[
+  {code:'RBP',name:'Relaxia Beverly Park',     stars:3,lvl:'target',      g:3.9,gr:5077,b:8.5,br:1441},
+  {code:'VRL',name:'Hotel LIVVO Veril Playa',  stars:3,lvl:'direct',      g:3.8,gr:729, b:7.5,br:907},
+  {code:'EUR',name:'Hotel Europalace',          stars:3,lvl:'direct',      g:3.9,gr:1161,b:null,br:null},
+  {code:'GRF',name:'Hotel Green Field',         stars:3,lvl:'direct',      g:3.7,gr:2064,b:null,br:null},
+  {code:'ABV',name:'Abora Buenaventura',        stars:4,lvl:'aspiracional',g:4.2,gr:7897,b:7.9,br:868},
+  {code:'ABC',name:'Abora Continental',         stars:4,lvl:'aspiracional',g:4.2,gr:5008,b:8.4,br:1749},
+  {code:'WKK',name:'Servatur Waikiki',          stars:4,lvl:'aspiracional',g:4.2,gr:6097,b:7.9,br:1507},
+  {code:'GCP',name:'Gran Canaria Princess',     stars:4,lvl:'aspiracional',g:4.3,gr:4092,b:8.3,br:2703},
+  {code:'BES',name:'Bull Escorial & Spa',       stars:4,lvl:'aspiracional',g:4.4,gr:2348,b:8.7,br:647},
+  {code:'SSB',name:'Seaside Sandy Beach',       stars:4,lvl:'benchmark',   g:4.6,gr:1808,b:null,br:null},
+  {code:'RPP',name:'Hotel Riu Papayas',         stars:4,lvl:'benchmark',   g:4.5,gr:4323,b:8.6,br:955},
+  {code:'RPM',name:'Riu Palace Maspalomas',     stars:5,lvl:'benchmark',   g:4.6,gr:4299,b:9.0,br:1551},
+];
+
+const issues=[
+  {tag:'habitacion_estado', label:'Estado habitaciones',         n:10,critical:2,moderate:5,minor:3},
+  {tag:'comida',            label:'Calidad de la comida',        n:7, critical:1,moderate:5,minor:1},
+  {tag:'servicio_recepcion',label:'Servicio en recepción',       n:7, critical:3,moderate:3,minor:1},
+  {tag:'ruido_interior',    label:'Ruido interior',              n:5, critical:1,moderate:4,minor:0},
+  {tag:'vista_engano',      label:'Engaño en vista al mar',      n:4, critical:3,moderate:1,minor:0},
+  {tag:'higiene',           label:'Higiene',                     n:4, critical:1,moderate:3,minor:0},
+  {tag:'instalaciones',     label:'Estado de instalaciones',     n:4, critical:0,moderate:3,minor:1},
+  {tag:'publico_huespedes', label:'Comportamiento de huéspedes', n:3, critical:0,moderate:2,minor:1},
+  {tag:'ruido_exterior',    label:'Ruido de la calle',           n:3, critical:2,moderate:1,minor:0},
+  {tag:'seguridad',         label:'Seguridad',                   n:2, critical:2,moderate:0,minor:0},
+  {tag:'precio_valor',      label:'Relación precio-valor',       n:2, critical:0,moderate:1,minor:1},
+  {tag:'animacion',         label:'Animación del hotel',         n:2, critical:0,moderate:2,minor:0},
+];
+
+const negReviews=[
+  {id:147,stars:1,lang:'es',severity:'critical',tags:['seguridad','servicio_recepcion'],text:'Me robaron dinero dentro de la habitación del hotel. Al comunicarlo en recepción, la actitud fue evasiva y poco profesional, sin asumir responsabilidad alguna ni ofrecer soluciones.'},
+  {id:323,stars:1,lang:'en',severity:'critical',tags:['seguridad','habitacion_estado'],text:'A cleaning staff member entered my room without knocking, even with a "Do Not Disturb" sign on the door. Reception refused to change my room. I will not recommend this hotel at all.'},
+  {id:257,stars:1,lang:'it',severity:'critical',tags:['ruido_exterior','ruido_interior','vista_engano'],text:"Mi hanno dato una stanza con vista verso l'autostrada. I muri sono di cartongesso, mi è sembrato di dormire in mezzo alla strada. Mai più, neanche gratis."},
+  {id:189,stars:1,lang:'de',severity:'critical',tags:['ruido_exterior','comida','vista_engano','higiene'],text:'Straßenlärm, schlechtes Essen, dreckige Handtücher. Meerblick gebucht, man schaut aber auf ein Dach. Ich weiß nicht, ob ich es hier bis zum Ende aushalten werde.'},
+  {id:56, stars:1,lang:'de',severity:'critical',tags:['servicio_recepcion'],text:'Die Dame an der Rezeption am 01.03.2026 war derartig unfreundlich, nicht mal gute Reise bringt sie über die Lippen. Wir kommen nicht wieder.'},
+  {id:54, stars:1,lang:'es',severity:'critical',tags:['habitacion_estado','vista_engano'],text:'Horroroso el ambiente, la habitación rota, la playa sucia. Muy mala experiencia.'},
+  {id:293,stars:2,lang:'de',severity:'moderate',tags:['animacion','comida','ruido_interior'],text:'Das Essen ist sehr schlecht geworden, zu wenig Fleisch und Fisch. Der Raum um die Bühne gleicht einer Abflughalle, alle Türen stehen offen und es zieht fürchterlich.'},
+  {id:159,stars:2,lang:'de',severity:'moderate',tags:['habitacion_estado','comida','instalaciones'],text:'In die Jahre gekommen. Das Essen schmeckte nach ein paar Tagen immer gleich, bin die letzten Tage woanders essen gegangen.'},
+  {id:107,stars:2,lang:'de',severity:'moderate',tags:['higiene','servicio_recepcion','publico_huespedes'],text:'Benutzte Handtücher wurden wieder zu den unbenutzten dazugelegt — hygienisch nicht zumutbar. Bei manchen Mitarbeitern ist noch viel Luft nach oben.'},
+  {id:17, stars:2,lang:'en',severity:'moderate',tags:['habitacion_estado','ruido_interior','comida','higiene'],text:"The room was very old and shabby. Broken bathroom tiles. The neighbor's TV can be heard through the wall. Food tasteless and some warm food was cold — a health risk."},
+  {id:10, stars:2,lang:'de',severity:'moderate',tags:['habitacion_estado','instalaciones'],text:'Die Zimmer sind klein, das Mobiliar alt, kein Kühlschrank — wäre auch kein Platz. Die Seifenspender im Bad waren nicht zusammengebaut.'},
+  {id:331,stars:3,lang:'en',severity:'moderate',tags:['instalaciones','comida','publico_huespedes'],text:'One elevator is broken daily. Food was good on day 1, then took a huge dip — rice undercooked, hamburger inedible. Older guests push in lines constantly.'},
+  {id:232,stars:3,lang:'de',severity:'moderate',tags:['ruido_interior','vista_engano','precio_valor'],text:'Meerblick gebucht, das Fenster geht zum Pool und zur Bar — Beschallung von morgens 10 bis abends 23 Uhr. Der Preis dafür ist viel zu teuer.'},
+  {id:195,stars:3,lang:'es',severity:'moderate',tags:['animacion','ruido_interior','servicio_recepcion'],text:'Animación nocturna escasa (21:00–21:45). El hotel no está bien insonorizado y la excusa es que "los clientes de siempre se quejan".'},
+  {id:111,stars:3,lang:'de',severity:'moderate',tags:['habitacion_estado','servicio_recepcion'],text:'Essen und Service sind in Ordnung, aber mein Zimmer kann man nur als Abstellkammer betiteln — das Bett war eine Zumutung. Das Hotel wollte nicht entgegenkommen.'},
+  {id:61, stars:3,lang:'de',severity:'moderate',tags:['ruido_exterior','habitacion_estado','comida','higiene'],text:'Zimmer sehr klein, hellhörig. Straßenlärm — immer Richtung Meer buchen! Raucher im Frühstücksbereich neben den Tischen.'},
+  {id:303,stars:3,lang:'sv',severity:'minor',tags:['servicio_recepcion'],text:'Frågade efter pris på klippning och fick 25€. När jag var klar kostade det 20€ mer för föning. Receptionen sa att de inte har med salongen att göra.'},
+  {id:231,stars:3,lang:'en',severity:'minor',tags:['habitacion_estado','instalaciones'],text:'The hotel is well located with good structure — pool and entertainment. The rooms are outdated with no minibar. Internet connection is very poor.'},
+  {id:158,stars:3,lang:'en',severity:'minor',tags:['habitacion_estado','precio_valor','publico_huespedes'],text:'Great location, good service — but the rooms need a big revamp. Geared mainly for older guests. Please mention the age group on your website.'},
+  {id:144,stars:3,lang:'es',severity:'minor',tags:['comida','habitacion_estado'],text:'El desayuno bien, la comida muy regular, las bebidas en todo incluido regulares. Excepto la comida y habitaciones, un siete.'},
+];
+
+const events=[
+  {name:'Carnaval Internacional Maspalomas',start:'10 Mar',end:'29 Mar',impact:'high',zone:'PDI'},
+  {name:'Gran Cabalgata Maspalomas',start:'28 Mar',end:'28 Mar',impact:'high',zone:'PDI'},
+  {name:'Semana Santa Gran Canaria',start:'29 Mar',end:'5 Abr',impact:'high',zone:'Maspalomas'},
+  {name:'Rally WRC Islas Canarias (50ª Ed.)',start:'23 Abr',end:'26 Abr',impact:'medium',zone:'Isla entera'},
+  {name:'Maspalomas Pride — 25º Aniversario',start:'4 May',end:'10 May',impact:'very_high',zone:'PDI'},
+  {name:'Gran Desfile Pride — 23 carrozas',start:'9 May',end:'9 May',impact:'very_high',zone:'PDI'},
+  {name:'XV Gran Canaria Walking Festival',start:'15 Oct',end:'18 Oct',impact:'medium',zone:'Isla entera'},
+  {name:'Winter Pride Maspalomas +40.000',start:'2 Nov',end:'8 Nov',impact:'very_high',zone:'Maspalomas'},
+];
+
+const serpGB=[
+  {q:'Hoteles 3★ PDI todo incluido',   pos:[{t:'ota'},{t:'ota'},{t:'hotel_direct',n:'Seaside Sandy Beach'},{t:'ota'},{t:'hotel_chain'},{t:'hotel_chain'},{t:'hotel_chain'},{t:'hotel_chain'},{t:'hotel_direct',n:'Seaside Sandy Beach'},{t:'ota'}]},
+  {q:'Todo incluido hoteles PDI',       pos:[{t:'ota'},{t:'ota'},{t:'ota'},{t:'ttoo'},{t:'ota'},{t:'hotel_chain'},{t:'ttoo'},{t:'ota'},{t:'hotel_direct',n:'Seaside Sandy Beach'},{t:'ttoo'}]},
+  {q:'Hotel PDI cerca playa',           pos:[{t:'ota'},{t:'ttoo'},{t:'hotel_direct',n:'Seaside Sandy Beach'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ota'},{t:'hotel_chain'},{t:'aggregator'}]},
+  {q:'Todo incluido Gran Canaria',      pos:[{t:'ota'},{t:'ota'},{t:'ota'},{t:'hotel_chain'},{t:'hotel_chain'},{t:'ota'},{t:'ttoo'},{t:'hotel_chain'},{t:'ota'},{t:'ttoo'}]},
+  {q:'Mejores hoteles Maspalomas',      pos:[{t:'ota'},{t:'media'},{t:'ota'},{t:'ota'},{t:'media'},{t:'media'},{t:'ttoo'},{t:'ttoo'},{t:'ota'},{t:'aggregator'}]},
+  {q:'Hoteles familia GC playa',        pos:[{t:'media'},{t:'ota'},{t:'hotel_direct',n:'Seaside Sandy Beach'},{t:'hotel_chain'},{t:'hotel_chain'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'}]},
+  {q:'Vacaciones GC todo incluido',     pos:[{t:'ttoo'},{t:'ttoo'},{t:'ota'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ota'},{t:'ttoo'}]},
+];
+const serpDE=[
+  {q:'4★ Hoteles Maspalomas todo incl.',pos:[{t:'ota'},{t:'ota'},{t:'ota'},{t:'ttoo'},{t:'ota'},{t:'hotel_chain'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'hotel_chain',n:'Gran Canaria Princess'}]},
+  {q:'Oferta AI PDI último minuto',     pos:[{t:'ttoo'},{t:'ttoo',rbp:true},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ota'}]},
+  {q:'Hotel wellness San Agustín GC',   pos:[{t:'ota'},{t:'ota'},{t:'hotel_chain'},{t:'hotel_chain',n:'Bull Escorial & Spa'},{t:'ota'},{t:'ttoo'},{t:'hotel_chain',n:'Abora Buenaventura'},{t:'ota'},{t:'ttoo'},{t:'ttoo'}]},
+  {q:'Hotel familia GC playa niños',    pos:[{t:'media'},{t:'ota'},{t:'hotel_direct',n:'Seaside Sandy Beach'},{t:'hotel_direct'},{t:'hotel_chain',n:'Bull Escorial'},{t:'ttoo'},{t:'ttoo'},{t:'hotel_chain'},{t:'hotel_chain',n:'Gran Canaria Princess'},{t:'ota'}]},
+  {q:'Vacaciones GC 2026 anticip.',     pos:[{t:'ttoo'},{t:'ota'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'},{t:'ttoo'}]},
+];
+const entityColor={ota:'#94A3B8',ttoo:'#60A5FA',hotel_chain:'#F59E0B',hotel_direct:'#10B981',media:'#A78BFA',aggregator:'#FB923C'};
+const entityLabel={ota:'Plataformas de reservas',ttoo:'Touroperadores',hotel_chain:'Cadenas hoteleras',hotel_direct:'Web hotel directo',media:'Medios/guías',aggregator:'Directorios'};
+const airbnbData=[{r:'< 60€',n:19},{r:'60–100€',n:22},{r:'100–150€',n:28},{r:'150–200€',n:12},{r:'200–300€',n:19},{r:'> 300€',n:132}];
+const starData=[{s:'1★',n:6},{s:'2★',n:5},{s:'3★',n:15},{s:'4★',n:46},{s:'5★',n:99}];
+const langData=[{l:'ES',n:56},{l:'DE',n:46},{l:'EN',n:28},{l:'NL',n:13},{l:'PL',n:11},{l:'FR',n:9},{l:'IT',n:9}];
+const featureRows=[
+  {label:'Régimen',fn:c=>({RBP:'Todo incl.',VRL:'Todo incl.',GRF:'Todo incl.',ABV:'Todo incl.',ABC:'Todo incl.',WKK:'Todo incl.',GCP:'Todo incl.',BES:'Todo incl.',SSB:'Media pens.',RPP:'Todo incl.',RPM:'Todo incl.'})[c]||'—'},
+  {label:'Solo adultos',fn:c=>({GCP:true,RPM:true})[c]||false,bool:true},
+  {label:'Spa / wellness',fn:c=>({GCP:true,BES:true,SSB:true,RPM:true})[c]||false,bool:true},
+  {label:'Piscinas',fn:c=>({RBP:'3',VRL:'2',GRF:'—',ABV:'3',ABC:'1',WKK:'—',GCP:'—',BES:'2',SSB:'1',RPP:'—',RPM:'2'})[c]||'—'},
+  {label:'Acceso directo playa',fn:c=>({RBP:true,VRL:true})[c]||false,bool:true},
+  {label:'Distancia a la playa',fn:c=>({RBP:'100m',VRL:'200m',GRF:'400m',ABV:'1.5km',ABC:'—',WKK:'1.5km',GCP:'—',BES:'500m',SSB:'200m',RPP:'1.5km',RPM:'800m'})[c]||'—'},
+  {label:'Certificado sostenible',fn:()=>false,bool:true},
+  {label:'Google / 5',fn:c=>props.find(p=>p.code===c)?.g,score:true},
+  {label:'Booking / 10',fn:c=>props.find(p=>p.code===c)?.b||'—'},
+  {label:'Precio sep. 7n',fn:c=>{const p=allPrices.find(x=>x.code===c&&x.date==='2026-09-04'&&x.nights===7);return p?`€${p.price.toFixed(0)}`:'—'}},
+];
+const featCodes=['RBP','VRL','GRF','ABV','ABC','WKK','GCP','BES','SSB','RPM'];
+
+// ── SMALL COMPONENTS ─────────────────────────────────────────────
+const Badge=({children,color='#EEF2F7',text='#4A6080',size=11})=>(
+  <span style={{background:color,color:text,fontSize:size,fontWeight:500,padding:'2px 8px',borderRadius:99,whiteSpace:'nowrap'}}>{children}</span>
+);
+const Dot=({impact})=>{
+  const m={very_high:'#DC2626',high:'#D97706',medium:'#2563EB',low:'#6B7280'};
+  return <span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:m[impact]||'#6B7280',marginRight:6,flexShrink:0}}/>;
+};
+const Th=({children,right,w})=>(
+  <th style={{padding:'8px 10px',textAlign:right?'right':'left',color:C.ts,fontSize:11,fontWeight:500,textTransform:'uppercase',letterSpacing:'0.05em',whiteSpace:'nowrap',width:w,borderBottom:`1px solid ${C.border}`}}>{children}</th>
+);
+const Td=({children,right,bold,dim,highlight,wrap})=>(
+  <td style={{padding:'8px 10px',textAlign:right?'right':'left',fontSize:13,color:highlight?C.teal:dim?C.tm:C.tp,fontWeight:bold||highlight?600:400,borderBottom:'1px solid #F1F5F9',whiteSpace:wrap?'normal':'nowrap'}}>{children}</td>
+);
+const Metric=({label,value,sub,color,small})=>(
+  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:'16px 20px',display:'flex',flexDirection:'column',gap:4}}>
+    <span style={{fontSize:11,color:C.ts,fontWeight:500,textTransform:'uppercase',letterSpacing:'0.05em'}}>{label}</span>
+    <span style={{fontSize:small?22:28,fontWeight:600,color:color||C.tp,lineHeight:1}}>{value}</span>
+    {sub&&<span style={{fontSize:12,color:C.ts,lineHeight:1.4}}>{sub}</span>}
+  </div>
+);
+const SectionTitle=({children,sub})=>(
+  <div style={{marginBottom:20}}>
+    <h2 style={{fontSize:20,fontWeight:600,color:C.tp,margin:0}}>{children}</h2>
+    {sub&&<p style={{fontSize:13,color:C.ts,margin:'4px 0 0'}}>{sub}</p>}
+  </div>
+);
+const Card=({children,title,sub,style={}})=>(
+  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:'hidden',...style}}>
+    {title&&<div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`}}>
+      <div style={{fontWeight:600,fontSize:14,color:C.tp}}>{title}</div>
+      {sub&&<div style={{fontSize:12,color:C.ts,marginTop:2}}>{sub}</div>}
+    </div>}
+    <div style={{padding:20}}>{children}</div>
+  </div>
+);
+const Insight=({children,type='info'})=>{
+  const s={
+    info:{bg:'#F0F9FF',border:'#BAE6FD',text:'#0369A1',icon:'💡'},
+    warning:{bg:'#FFFBEB',border:'#FDE68A',text:'#92400E',icon:'⚠️'},
+    alert:{bg:'#FEF2F2',border:'#FECACA',text:'#991B1B',icon:'🔴'},
+    success:{bg:'#F0FDF4',border:'#BBF7D0',text:'#065F46',icon:'✓'},
+  }[type];
+  return(
+    <div style={{background:s.bg,border:`1px solid ${s.border}`,borderRadius:10,padding:'12px 16px',marginBottom:20,display:'flex',gap:10,alignItems:'flex-start'}}>
+      <span style={{fontSize:15,flexShrink:0,marginTop:1}}>{s.icon}</span>
+      <p style={{margin:0,fontSize:13,color:s.text,lineHeight:1.6}}>{children}</p>
+    </div>
+  );
+};
+
+// ── OVERVIEW ─────────────────────────────────────────────────────
+function Overview(){
+  const rbp=props.find(p=>p.code==='RBP');
+  const rbpGRank=[...props].sort((a,b)=>b.g-a.g).findIndex(p=>p.code==='RBP')+1;
+  const rbpPrice=allPrices.find(p=>p.code==='RBP'&&p.date==='2026-09-04'&&p.nights===7);
+  const sep7=allPrices.filter(p=>p.date==='2026-09-04'&&p.nights===7).sort((a,b)=>a.price-b.price);
+  const priceRank=sep7.findIndex(p=>p.code==='RBP')+1;
+  const nextEvents=events.filter(e=>e.impact==='very_high'||e.impact==='high').slice(0,4);
+  return(
+    <div>
+      <SectionTitle sub="Visión global del hotel y su posición en el mercado · datos 28 marzo 2026">Resumen ejecutivo</SectionTitle>
+      <Insight type="warning">
+        Relaxia Beverly Park ocupa el <strong>7º lugar en precio</strong> con €182/noche (todo incluido), pero tiene solo 3 estrellas y una puntuación Google de 3.9 frente a una media de mercado de 4.3. Esto genera una tensión clara: el hotel cobra precios de hotel de 4 estrellas pero los huéspedes lo perciben como de 3. Además, <strong>no aparece de forma orgánica en ninguna búsqueda en Google</strong> en los mercados emisores de Reino Unido ni Alemania.
+      </Insight>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:20}}>
+        <Metric label="Valoración Google" value={`${rbp.g}/5`} sub={`${rbp.gr.toLocaleString()} reseñas · puesto ${rbpGRank} de 12`} color={C.amber}/>
+        <Metric label="Valoración Booking" value={rbp.b} sub={`${rbp.br.toLocaleString()} reseñas · "Very good"`} color={C.teal}/>
+        <Metric label="Precio/noche sep. · 7n" value={`€${rbpPrice?.price.toFixed(0)}`} sub={`Todo incluido · ${priceRank}º de 11 hoteles`} color={C.navy}/>
+        <Metric label="Apariciones en Google" value="2 de 170" sub="búsquedas monitorizadas (UK + DE)" color={C.red}/>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:16,marginBottom:16}}>
+        <Card title="Posición de precio en el mercado — septiembre 2026, 7 noches" sub="Ordenado de menor a mayor precio · régimen indicado en cada barra">
+          <div style={{display:'flex',flexDirection:'column',gap:5}}>
+            {sep7.map(p=>{
+              const pct=(p.price/274)*100,isRBP=p.code==='RBP';
+              return(
+                <div key={p.code} style={{display:'flex',alignItems:'center',gap:8}}>
+                  <div style={{width:140,fontSize:11,color:isRBP?C.teal:C.ts,fontWeight:isRBP?600:400,textAlign:'right',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',flexShrink:0}}>{p.name}</div>
+                  <div style={{flex:1,background:'#F1F5F9',borderRadius:4,height:18}}>
+                    <div style={{width:`${pct}%`,height:'100%',background:isRBP?C.teal:lvlColor[p.lvl]||'#64748B',borderRadius:4,opacity:isRBP?1:0.6}}/>
+                  </div>
+                  <div style={{width:38,fontSize:12,color:isRBP?C.teal:C.tp,fontWeight:isRBP?600:400,textAlign:'right',flexShrink:0}}>€{p.price.toFixed(0)}</div>
+                  <div style={{width:16,fontSize:10,color:C.tm,flexShrink:0}}>{p.stars}★</div>
+                  <Badge color={p.regime==='AI'?'#EFF6FF':'#F0FDF4'} text={p.regime==='AI'?'#1E40AF':'#14532D'} size={9}>{p.regime}</Badge>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{display:'flex',gap:10,marginTop:10,flexWrap:'wrap'}}>
+            {[['target',C.teal,'Hotel cliente'],['direct','#0891B2','Competencia directa'],['aspiracional','#6D28D9','Aspiracional'],['benchmark','#374151','Benchmark']].map(([k,v,l])=>(
+              <span key={k} style={{display:'flex',alignItems:'center',gap:4,fontSize:10,color:C.ts}}>
+                <span style={{width:10,height:10,background:v,borderRadius:2,display:'inline-block'}}/>{l}
+              </span>
+            ))}
+          </div>
+        </Card>
+        <Card title="Alertas detectadas">
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            {[
+              {sev:'critical',msg:'Sin aparición orgánica en Google en Reino Unido (0 de 70 búsquedas)'},
+              {sev:'critical',msg:'Puntuación Google 3.9 — la media del mercado es 4.3'},
+              {sev:'warning', msg:'Precio de 4★ con 3 estrellas: €182 frente a Waikiki 4★ AI a €103'},
+              {sev:'warning', msg:'Sin certificación de sostenibilidad — el 58% del mercado sí la tiene'},
+              {sev:'info',    msg:'Riu Palace: 1 habitación disponible — alta ocupación en el segmento premium'},
+            ].map((a,i)=>{
+              const bg={critical:'#FEF2F2',warning:'#FFFBEB',info:'#EFF6FF'}[a.sev];
+              const bc={critical:'#FCA5A5',warning:'#FCD34D',info:'#93C5FD'}[a.sev];
+              const tc={critical:'#991B1B',warning:'#92400E',info:'#1E40AF'}[a.sev];
+              return <div key={i} style={{background:bg,border:`1px solid ${bc}`,borderRadius:8,padding:'8px 12px'}}><p style={{margin:0,fontSize:12,color:tc,lineHeight:1.5}}>{a.msg}</p></div>;
+            })}
+          </div>
+        </Card>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+        <Card title="Brechas de producto principales" sub="Lo que los competidores ofrecen y el hotel no tiene">
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+            {[
+              {label:'Spa / wellness',who:'4 competidores sí lo tienen',imp:'Medio'},
+              {label:'Certificado sostenible',who:'58% del mercado Booking',imp:'Alto'},
+              {label:'Bebidas premium en AI',who:'Bull, Waikiki AI+, Riu',imp:'Medio'},
+              {label:'Visibilidad en Google',who:'Bull aparece en 4 búsquedas',imp:'Alto'},
+            ].map((g,i)=>(
+              <div key={i} style={{background:'#FFF7ED',border:'1px solid #FED7AA',borderRadius:8,padding:'8px 10px'}}>
+                <div style={{fontSize:10,fontWeight:600,color:'#C2410C',marginBottom:2}}>Impacto {g.imp}</div>
+                <div style={{fontSize:12,fontWeight:600,color:C.tp}}>{g.label}</div>
+                <div style={{fontSize:11,color:C.ts,marginTop:2}}>{g.who}</div>
+              </div>
+            ))}
+            <div style={{background:'#F0FDF4',border:'1px solid #A7F3D0',borderRadius:8,padding:'8px 10px',gridColumn:'span 2'}}>
+              <div style={{fontSize:10,fontWeight:600,color:'#065F46',marginBottom:2}}>Ventaja diferencial a comunicar</div>
+              <div style={{fontSize:12,fontWeight:600,color:C.tp}}>Acceso directo a la playa + 3 piscinas (1 climatizada)</div>
+              <div style={{fontSize:11,color:C.ts,marginTop:2}}>Solo este hotel y LIVVO Veril tienen acceso directo — diferenciador infrautilizado</div>
+            </div>
+          </div>
+        </Card>
+        <Card title="Próximos eventos con alta demanda">
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            {nextEvents.map((e,i)=>{
+              const ic=e.impact==='very_high'?'#DC2626':'#D97706';
+              const ib=e.impact==='very_high'?'#FEF2F2':'#FFFBEB';
+              const bc=e.impact==='very_high'?'#FCA5A5':'#FCD34D';
+              return(
+                <div key={i} style={{background:ib,border:`1px solid ${bc}`,borderRadius:8,padding:'10px 12px',display:'flex',alignItems:'center',gap:10}}>
+                  <Dot impact={e.impact}/>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:600,color:C.tp}}>{e.name}</div>
+                    <div style={{fontSize:11,color:C.ts,marginTop:2}}>{e.start}{e.start!==e.end?` → ${e.end}`:''} · {e.zone}</div>
+                  </div>
+                  <span style={{fontSize:11,color:ic,fontWeight:600,whiteSpace:'nowrap'}}>{e.impact==='very_high'?'Muy alto':'Alto'}</span>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// ── PRICES ────────────────────────────────────────────────────────
+const ineRef={
+  '2026-05-22-7':{month:'mayo 2026',   ineAdr:115.34,ineRevpar:86.33, ineOcc:76.13,gapPct:34.3,rbpRevpar:117.91},
+  '2026-09-04-7':{month:'sep. 2026',   ineAdr:130.64,ineRevpar:114.55,ineOcc:86.80,gapPct:39.4,rbpRevpar:158.07},
+};
+
+// Short label for dot chart (fits above dot)
+const shortName={
+  RBP:'Relaxia Beverly Park',
+  VRL:'LIVVO Veril',
+  GRF:'Green Field',
+  WKK:'Waikiki',
+  GCP:'GC Princess',
+  ABC:'Abora Cont.',
+  ABV:'Abora Buena.',
+  BES:'Bull Escorial',
+  SSB:'Sandy Beach',
+  RPP:'Riu Papayas',
+  RPM:'Riu Palace',
+};
+
+const situationText={
+  '2026-05-22-7':'Datos de 8 hoteles monitorizados. Relaxia es el único hotel de 3★ en el tercio superior de precio: cobra más que 2 de los 3 hoteles de 4★ presentes. La media del mercado provincial (INE) queda €40 por debajo del precio de Relaxia.',
+  '2026-05-29-2':'Solo 4 hoteles ofrecen disponibilidad para 2 noches en esta fecha. Relaxia no aparece — no comercializa estancias de 2 noches en Booking para este periodo. Los datos reflejan únicamente los competidores que sí lo hacen.',
+  '2026-09-04-2':'Solo 3 hoteles ofrecen disponibilidad para 2 noches. Relaxia no aparece — no permite reservar estancias de 2 noches en septiembre. Esta combinación corta suele captarse por canales directos o turoperadores.',
+  '2026-09-04-7':'Datos de 11 hoteles. Relaxia ocupa la 7ª posición de precio con €182/noche, por encima de competidores de 4★ con todo incluido como Servatur Waikiki (€103) o Abora Buenaventura (€157). Es el precio más alto del segmento 3★.',
+};
+
+function Prices(){
+  const [sel,setSel]=useState('2026-05-22-7');
+  const [tip,setTip]=useState(null);
+  const [hovDot,setHovDot]=useState(null);
+
+  const dateOpts=[
+    {key:'2026-05-22-7',label:'22 mayo · 7 noches',  noRbp:false},
+    {key:'2026-05-29-2',label:'29 mayo · 2 noches',  noRbp:true},
+    {key:'2026-09-04-2',label:'4 sep · 2 noches',    noRbp:true},
+    {key:'2026-09-04-7',label:'4 sep · 7 noches',    noRbp:false},
+  ];
+
+  const parts=sel.split('-');
+  const selNights=parseInt(parts[parts.length-1]);
+  const selDate=parts.slice(0,-1).join('-');
+
+  const hotels=useMemo(()=>
+    allPrices.filter(p=>p.date===selDate&&p.nights===selNights).sort((a,b)=>a.price-b.price),
+    [selDate,selNights]
+  );
+
+  const ine=ineRef[sel];
+  const rbp=hotels.find(h=>h.code==='RBP');
+  const selOpt=dateOpts.find(o=>o.key===sel);
+
+  // Info tooltip
+  const TipIcon=({id,text})=>(
+    <span style={{position:'relative',display:'inline-flex',verticalAlign:'middle',marginLeft:4}}>
+      <span onMouseEnter={()=>setTip(id)} onMouseLeave={()=>setTip(null)}
+        style={{width:14,height:14,borderRadius:'50%',background:'#E2E8F0',color:C.ts,fontSize:9,fontWeight:700,display:'inline-flex',alignItems:'center',justifyContent:'center',cursor:'help',flexShrink:0}}>i</span>
+      {tip===id&&(
+        <div style={{position:'absolute',bottom:'calc(100% + 6px)',left:0,zIndex:200,background:C.navy,color:'#fff',fontSize:11,lineHeight:1.55,padding:'8px 12px',borderRadius:8,width:230,boxShadow:'0 4px 16px rgba(0,0,0,0.18)',pointerEvents:'none'}}>
+          {text}
+        </div>
+      )}
+    </span>
+  );
+
+  // Dot strip chart — React-based to support hover state
+  const DotChart=()=>{
+    if(!hotels.length) return null;
+    const prices=hotels.map(h=>h.price);
+    const minP=Math.min(...prices)-20;
+    const maxP=Math.max(...prices)+20;
+    const W=580,CY=62,PAD=48;
+    const toX=p=>PAD+((p-minP)/(maxP-minP))*(W-2*PAD);
+    const bandX1=ine?toX(ine.ineAdr*0.88):0;
+    const bandX2=ine?toX(ine.ineAdr*1.12):0;
+    return(
+      <div style={{position:'relative'}}>
+        <svg viewBox={`0 0 ${W} 130`} style={{width:'100%',overflow:'visible',display:'block'}}>
+          {/* Base line */}
+          <line x1={PAD} y1={CY} x2={W-PAD} y2={CY} stroke="#E2E8F0" strokeWidth={1.5}/>
+          {/* INE band */}
+          {ine&&<rect x={bandX1} y={CY-12} width={bandX2-bandX1} height={24} rx={4} fill="#CBD5E1" opacity={0.5}/>}
+          {/* INE label */}
+          {ine&&<text x={(bandX1+bandX2)/2} y={CY+30} textAnchor="middle" fontSize={8.5} fill="#94A3B8">media INE</text>}
+          {/* Dots */}
+          {hotels.map((h,i)=>{
+            const x=toX(h.price);
+            const isRBP=h.code==='RBP';
+            const isHov=hovDot===`${h.code}-${i}`;
+            const r=isRBP?9:6;
+            const col=isRBP?C.teal:h.lvl==='direct'?'#0891B2':h.lvl==='aspiracional'?'#6D28D9':'#374151';
+            const lbl=shortName[h.code]||h.code;
+            // Shorten label for dot display (first word or abbreviation)
+            const dotLbl=isRBP?'▶ Relaxia':lbl;
+            return(
+              <g key={`${h.code}-${i}`}
+                onMouseEnter={()=>setHovDot(`${h.code}-${i}`)}
+                onMouseLeave={()=>setHovDot(null)}
+                style={{cursor:'default'}}>
+                {/* Label above */}
+                <text x={x} y={CY-r-10} textAnchor="middle"
+                  fontSize={isRBP?10:8.5} fontWeight={isRBP?'700':'400'}
+                  fill={isRBP?C.teal:isHov?C.tp:'#94A3B8'}>{dotLbl}</text>
+                {/* Dot */}
+                <circle cx={x} cy={CY} r={isHov&&!isRBP?r+2:r}
+                  fill={col} stroke="#fff" strokeWidth={isRBP?2.5:2}
+                  opacity={isHov?1:0.85}/>
+                {/* Price below */}
+                <text x={x} y={CY+r+14} textAnchor="middle"
+                  fontSize={isRBP?11:9} fontWeight={isRBP?'700':'400'}
+                  fill={isRBP?C.teal:isHov?C.tp:'#94A3B8'}>€{h.price.toFixed(0)}</text>
+                {/* Hover tooltip: full name */}
+                {isHov&&!isRBP&&(
+                  <g>
+                    <rect x={x-70} y={CY-r-46} width={140} height={22} rx={4} fill={C.navy}/>
+                    <text x={x} y={CY-r-31} textAnchor="middle" fontSize={10} fontWeight="600" fill="#fff">{h.name}</text>
+                    <text x={x} y={CY-r-31+12} textAnchor="middle" fontSize={8.5} fill="rgba(255,255,255,0.6)">{h.stars}★ · {h.regime} · €{h.price.toFixed(0)}/n</text>
+                  </g>
+                )}
+                {isHov&&isRBP&&(
+                  <g>
+                    <rect x={x-80} y={CY-r-52} width={160} height={28} rx={4} fill={C.teal}/>
+                    <text x={x} y={CY-r-36} textAnchor="middle" fontSize={10} fontWeight="700" fill="#fff">Relaxia Beverly Park</text>
+                    <text x={x} y={CY-r-36+13} textAnchor="middle" fontSize={8.5} fill="rgba(255,255,255,0.8)">{h.stars}★ · Todo incluido · €{h.price.toFixed(0)}/n</text>
+                  </g>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    );
+  };
+
+  const direct=hotels.filter(h=>h.lvl==='target'||h.lvl==='direct');
+  const broader=hotels.filter(h=>h.lvl==='aspiracional'||h.lvl==='benchmark');
+  const maxDiff=rbp?Math.max(...hotels.map(h=>Math.abs(h.price-rbp.price)),1):1;
+
+  const HotelRow=({h})=>{
+    const isRBP=h.code==='RBP';
+    const diff=rbp?h.price-rbp.price:0;
+    const barW=Math.round((Math.abs(diff)/maxDiff)*70);
+    const cheaper=diff<0;
+    return(
+      <tr style={{background:isRBP?'#EFF9FB':'transparent'}}>
+        <td style={{padding:'9px 12px',fontSize:12,fontWeight:isRBP?700:400,color:isRBP?C.teal:C.tp,borderBottom:`1px solid ${C.border}`}}>
+          {isRBP&&<span style={{background:C.teal,color:'#fff',fontSize:8,fontWeight:700,padding:'1px 5px',borderRadius:3,marginRight:5}}>TÚ</span>}
+          {h.name}
+        </td>
+        <td style={{padding:'9px 8px',fontSize:12,color:C.ts,textAlign:'center',borderBottom:`1px solid ${C.border}`}}>{h.stars}★</td>
+        <td style={{padding:'9px 8px',fontSize:10,textAlign:'center',borderBottom:`1px solid ${C.border}`}}>
+          <span style={{background:h.regime==='AI'?'#EFF6FF':'#F0FDF4',color:h.regime==='AI'?'#1E40AF':'#065F46',padding:'2px 6px',borderRadius:99,fontWeight:600,fontSize:9}}>{h.regime}</span>
+        </td>
+        <td style={{padding:'9px 12px',fontSize:13,fontWeight:isRBP?700:400,color:isRBP?C.teal:C.tp,textAlign:'right',borderBottom:`1px solid ${C.border}`}}>€{h.price.toFixed(0)}</td>
+        <td style={{padding:'9px 16px 9px 8px',borderBottom:`1px solid ${C.border}`,width:180}}>
+          {isRBP?(
+            <div style={{display:'flex',alignItems:'center',gap:4}}>
+              <div style={{width:2,height:18,background:C.teal,borderRadius:1}}/>
+              <span style={{fontSize:10,color:C.teal,fontWeight:600}}>referencia</span>
+            </div>
+          ):(
+            <div style={{display:'flex',alignItems:'center',gap:4}}>
+              <div style={{width:70,position:'relative',height:14}}>
+                {cheaper?(
+                  <div style={{position:'absolute',right:'50%',top:1,width:barW,height:12,background:'#10B981',borderRadius:'2px 0 0 2px',opacity:0.75}}/>
+                ):(
+                  <div style={{position:'absolute',left:'50%',top:1,width:barW,height:12,background:'#F59E0B',borderRadius:'0 2px 2px 0',opacity:0.75}}/>
+                )}
+                <div style={{position:'absolute',left:'50%',top:0,width:1,height:14,background:'#CBD5E1'}}/>
+              </div>
+              <span style={{fontSize:11,fontWeight:600,color:cheaper?'#059669':'#D97706',whiteSpace:'nowrap'}}>
+                {cheaper?'−':'+'}{Math.abs(diff).toFixed(0)}€
+              </span>
+            </div>
+          )}
+        </td>
+      </tr>
+    );
+  };
+
+  return(
+    <div>
+      <SectionTitle sub="Análisis de posicionamiento de precio — datos scrapeados de Booking.com y referencia INE-EOH">
+        ¿Cómo se posiciona Relaxia Beverly Park en el mercado?
+      </SectionTitle>
+
+      {/* ── Date selector ── */}
+      <div style={{display:'flex',gap:8,marginBottom:12,flexWrap:'wrap',alignItems:'center'}}>
+        {dateOpts.map(o=>{
+          const a=o.key===sel;
+          return(
+            <div key={o.key} style={{position:'relative'}}>
+              <button onClick={()=>setSel(o.key)}
+                style={{padding:'7px 16px',borderRadius:8,border:`1px solid ${a?C.teal:C.border}`,
+                  background:a?C.teal:C.card,color:a?'#fff':o.noRbp?C.tm:C.ts,
+                  fontSize:12,fontWeight:a?600:400,cursor:'pointer',transition:'all 0.15s',
+                  position:'relative'}}>
+                {o.label}
+                {o.noRbp&&(
+                  <span style={{position:'absolute',top:-5,right:-5,width:8,height:8,borderRadius:'50%',background:'#F59E0B',border:'1.5px solid #fff'}}/>
+                )}
+              </button>
+            </div>
+          );
+        })}
+        {selOpt?.noRbp&&(
+          <span style={{fontSize:11,color:'#D97706',display:'flex',alignItems:'center',gap:5,marginLeft:4}}>
+            <span style={{width:8,height:8,borderRadius:'50%',background:'#F59E0B',display:'inline-block',flexShrink:0}}/>
+            Relaxia no ofrece reservas de 2 noches en esta fecha
+          </span>
+        )}
+      </div>
+
+      {/* ── Situation description ── */}
+      <div style={{background:'#F8FAFC',border:`1px solid ${C.border}`,borderRadius:10,padding:'11px 16px',marginBottom:18,display:'flex',gap:10,alignItems:'flex-start'}}>
+        <span style={{fontSize:16,flexShrink:0,marginTop:1}}>📍</span>
+        <p style={{margin:0,fontSize:13,color:C.ts,lineHeight:1.65}}>{situationText[sel]}</p>
+      </div>
+
+      {/* ── BLOQUE 1: Diagnóstico + dot chart ── */}
+      <Card style={{marginBottom:14}}>
+        <div style={{padding:'18px 22px 0',display:'flex',alignItems:'center',gap:6}}>
+          <span style={{fontSize:12,fontWeight:700,color:C.ts,textTransform:'uppercase',letterSpacing:'0.06em'}}>¿Cobras lo que deberías?</span>
+          <TipIcon id="b1" text="Compara el precio por noche de Relaxia con la tarifa media diaria de los hoteles de Las Palmas según el INE (Encuesta de Ocupación Hotelera)."/>
+        </div>
+
+        {hotels.length===0?(
+          <div style={{padding:'20px 22px',color:C.tm,fontSize:13}}>Sin datos de precio para esta combinación de fecha y noches.</div>
+        ):(
+          <>
+            {rbp&&ine?(
+              <div style={{padding:'14px 22px 0'}}>
+                <div style={{fontSize:17,fontWeight:700,color:ine.gapPct>30?'#B45309':ine.gapPct>10?'#D97706':'#059669',lineHeight:1.4}}>
+                  En {ine.month}, Relaxia cobra un{' '}
+                  <span style={{fontSize:26,fontWeight:800}}>{ine.gapPct}%</span>{' '}
+                  más que la media del mercado provincial
+                </div>
+              </div>
+            ):rbp?(
+              <div style={{padding:'14px 22px 0',fontSize:14,fontWeight:600,color:C.ts}}>
+                Sin referencia INE para esta fecha · Precio de Relaxia: <strong style={{color:C.teal}}>€{rbp.price.toFixed(0)}/noche</strong>
+              </div>
+            ):(
+              <div style={{padding:'14px 22px 6px',background:'#FFFBEB',margin:'14px 22px 0',borderRadius:8,border:'1px solid #FDE68A'}}>
+                <span style={{fontSize:13,color:'#92400E'}}>
+                  ⚠️ Relaxia no ofrece reservas de <strong>2 noches</strong> para esta fecha en Booking.com — solo aparecen los competidores que sí lo hacen.
+                </span>
+              </div>
+            )}
+
+            <div style={{padding:'8px 22px 12px'}}>
+              <DotChart/>
+            </div>
+
+            {ine&&(
+              <div style={{padding:'0 22px 16px',display:'flex',alignItems:'center',gap:8}}>
+                <div style={{width:28,height:12,background:'#CBD5E1',borderRadius:3,opacity:0.7,flexShrink:0}}/>
+                <span style={{fontSize:11,color:C.tm,lineHeight:1.5}}>
+                  La franja gris representa lo que cobra de media un hotel en Gran Canaria ese mes, según el INE
+                </span>
+              </div>
+            )}
+
+            <div style={{padding:'0 22px 16px',borderTop:`1px solid ${C.border}`,paddingTop:10,display:'flex',gap:14,flexWrap:'wrap'}}>
+              {[
+                [C.teal,'Relaxia Beverly Park'],
+                ['#0891B2','Competencia directa (3★)'],
+                ['#6D28D9','Aspiracional (4★)'],
+                ['#374151','Benchmark (4–5★)'],
+              ].map(([col,lbl])=>(
+                <span key={lbl} style={{display:'flex',alignItems:'center',gap:5,fontSize:10,color:C.ts}}>
+                  <span style={{width:8,height:8,borderRadius:'50%',background:col,display:'inline-block'}}/>
+                  {lbl}
+                </span>
+              ))}
+              <span style={{fontSize:10,color:C.tm,marginLeft:'auto'}}>Pasa el cursor sobre cada punto para ver el nombre completo</span>
+            </div>
+          </>
+        )}
+      </Card>
+
+      {/* ── BLOQUE 2: Ingreso por habitación ── */}
+      {rbp&&ine?(
+        <Card style={{marginBottom:14}}>
+          <div style={{padding:'18px 22px 16px'}}>
+            <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:16}}>
+              <span style={{fontSize:12,fontWeight:700,color:C.ts,textTransform:'uppercase',letterSpacing:'0.06em'}}>Ingreso estimado por habitación cada noche</span>
+              <TipIcon id="b2" text="Esto es lo que en hotelería se llama RevPAR. Lo calculamos multiplicando tu precio de Booking por la tasa de ocupación real del mercado provincial (INE). Es una estimación — tus datos reales de PMS darían la cifra exacta."/>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:20,flexWrap:'wrap'}}>
+              <div style={{background:'#EFF9FB',border:`1px solid #BAE6FD`,borderRadius:12,padding:'16px 24px',minWidth:140}}>
+                <div style={{fontSize:10,color:C.tm,marginBottom:4,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.06em'}}>Relaxia Beverly Park</div>
+                <div style={{fontSize:38,fontWeight:800,color:C.teal,lineHeight:1}}>€{ine.rbpRevpar}</div>
+                <div style={{fontSize:11,color:C.ts,marginTop:4}}>estimado</div>
+              </div>
+              <div style={{textAlign:'center',minWidth:80}}>
+                <div style={{fontSize:22,color:'#F59E0B'}}>→</div>
+                <div style={{fontSize:13,fontWeight:700,color:'#F59E0B',marginTop:2}}>
+                  +€{(ine.rbpRevpar-ine.ineRevpar).toFixed(2)}
+                </div>
+                <div style={{fontSize:10,color:C.tm,marginTop:1}}>por encima<br/>del mercado</div>
+              </div>
+              <div style={{background:'#F8FAFC',border:`1px solid ${C.border}`,borderRadius:12,padding:'16px 24px',minWidth:140}}>
+                <div style={{fontSize:10,color:C.tm,marginBottom:4,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.06em'}}>Media mercado provincial</div>
+                <div style={{fontSize:38,fontWeight:800,color:C.ts,lineHeight:1}}>€{ine.ineRevpar}</div>
+                <div style={{fontSize:11,color:C.tm,marginTop:4}}>fuente INE · {ine.month.replace('2026','2025')} (ref.)</div>
+              </div>
+              <div style={{background:'#F8FAFC',border:`1px solid ${C.border}`,borderRadius:12,padding:'16px 20px'}}>
+                <div style={{fontSize:10,color:C.tm,marginBottom:4,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.06em'}}>Ocupación de referencia</div>
+                <div style={{fontSize:28,fontWeight:800,color:C.ts,lineHeight:1}}>{ine.ineOcc}%</div>
+                <div style={{fontSize:11,color:C.tm,marginTop:4}}>hoteles Las Palmas (INE)</div>
+              </div>
+            </div>
+            <div style={{marginTop:14,padding:'10px 14px',background:'#F8FAFC',borderRadius:8,border:`1px solid ${C.border}`}}>
+              <span style={{fontSize:11,color:C.tm,lineHeight:1.6}}>
+                💡 Este cálculo combina tu precio publicado en Booking con la ocupación real del mercado provincial.
+                Es una estimación — los datos reales de tu PMS darían la cifra exacta.
+              </span>
+            </div>
+          </div>
+        </Card>
+      ):!rbp?(
+        <div style={{marginBottom:14}}>
+          <Insight type="info">Sin precio de Relaxia disponible para esta fecha — los bloques de diagnóstico se activarán cuando haya datos de precios en Booking.</Insight>
+        </div>
+      ):null}
+
+      {/* ── BLOQUE 3: Tabla competidores ── */}
+      <Card>
+        <div style={{padding:'18px 22px 0',display:'flex',alignItems:'center',gap:6,marginBottom:12}}>
+          <span style={{fontSize:12,fontWeight:700,color:C.ts,textTransform:'uppercase',letterSpacing:'0.06em'}}>¿Cómo te comparan tus vecinos más cercanos?</span>
+          <TipIcon id="b3" text="La barra muestra cuánto cobra cada hotel por encima (naranja) o por debajo (verde) del precio de Relaxia, en euros. Sin porcentajes ni índices."/>
+        </div>
+        {hotels.length===0?(
+          <div style={{padding:'0 22px 20px',color:C.tm,fontSize:13}}>Sin datos para esta fecha.</div>
+        ):(
+          <table style={{width:'100%',borderCollapse:'collapse'}}>
+            <thead>
+              <tr style={{background:'#F8FAFC'}}>
+                {['Hotel','★','Régimen','Precio / noche','vs. Relaxia'].map((h,i)=>(
+                  <th key={i} style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:i>=3?'right':'left',borderBottom:`1px solid ${C.border}`,whiteSpace:'nowrap'}}>
+                    {i===4?<span style={{display:'flex',alignItems:'center',gap:3}}>{h}<TipIcon id="b3bar" text="Verde = más barato que Relaxia. Naranja = más caro. El ancho es proporcional a la diferencia máxima del grupo."/></span>:h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {direct.length>0&&(
+                <>
+                  <tr><td colSpan={5} style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:C.tm,background:'#F1F5F9',textTransform:'uppercase',letterSpacing:'0.05em',borderBottom:`1px solid ${C.border}`}}>Competidores directos · 3 estrellas</td></tr>
+                  {direct.map((h,i)=><HotelRow key={h.code+i} h={h}/>)}
+                </>
+              )}
+              {broader.length>0&&(
+                <>
+                  <tr><td colSpan={5} style={{padding:'6px 12px',fontSize:10,fontWeight:700,color:C.tm,background:'#F1F5F9',textTransform:'uppercase',letterSpacing:'0.05em',borderBottom:`1px solid ${C.border}`}}>Entorno más amplio · 4–5 estrellas</td></tr>
+                  {broader.map((h,i)=><HotelRow key={h.code+i} h={h}/>)}
+                </>
+              )}
+            </tbody>
+          </table>
+        )}
+        <div style={{padding:'10px 22px 12px',display:'flex',gap:8,alignItems:'center',flexWrap:'wrap'}}>
+          <div style={{width:12,height:12,background:'#10B981',borderRadius:2,opacity:0.75}}/>
+          <span style={{fontSize:10,color:C.tm}}>Más barato que Relaxia</span>
+          <div style={{width:12,height:12,background:'#F59E0B',borderRadius:2,opacity:0.75,marginLeft:8}}/>
+          <span style={{fontSize:10,color:C.tm}}>Más caro que Relaxia</span>
+          <span style={{fontSize:10,color:C.tm,marginLeft:8}}>· AI = todo incluido · B&B = solo alojamiento</span>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+
+// ── REPUTATION ────────────────────────────────────────────────────
+function Reputation(){
+  const rbp=props.find(p=>p.code==='RBP');
+  const avgG=(props.reduce((s,p)=>s+p.g,0)/props.length).toFixed(1);
+  return(
+    <div>
+      <SectionTitle sub="Valoraciones en Google y Booking · distribución de reseñas · comparativa de mercado">Valoraciones y opiniones</SectionTitle>
+      <Insight type="warning">
+        Con un 3.9 en Google, el hotel está <strong>0.4 puntos por debajo de la media del mercado (4.3)</strong>. Seaside Sandy Beach lidera con 4.6. En Booking, sin embargo, obtiene 8.5 ("Very good"), lo que sugiere que quienes reservan directamente están más satisfechos que la percepción general en Google. Esta brecha puede indicar problemas de gestión de expectativas antes de la llegada o un sesgo de reseñadores no satisfechos.
+      </Insight>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:20}}>
+        <Metric label="Valoración Google" value={`${rbp.g}/5`} sub={`Media mercado: ${avgG}/5`} color={C.amber}/>
+        <Metric label="Valoración Booking" value={rbp.b} sub={`${rbp.br.toLocaleString()} reseñas`} color={C.teal}/>
+        <Metric label="Total reseñas Google" value={rbp.gr.toLocaleString()} sub="Más que 8 de 11 competidores"/>
+        <Metric label="Reseñas negativas analizadas" value="20" sub="con texto y categorización"/>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'5fr 2fr',gap:16}}>
+        <Card title="Tabla comparativa de valoraciones" sub="Ordenado por puntuación Google · verde ≥4.4 · naranja ≥4.0 · rojo <4.0">
+          <div style={{overflowX:'auto'}}>
+            <table style={{width:'100%',borderCollapse:'collapse'}}>
+              <thead><tr>
+                <Th>Hotel</Th><Th>★</Th><Th>Nivel</Th>
+                <Th right>Google</Th><Th right>Reseñas Google</Th>
+                <Th right>Booking</Th><Th right>Reseñas Booking</Th>
+              </tr></thead>
+              <tbody>
+                {[...props].sort((a,b)=>b.g-a.g).map(p=>{
+                  const isRBP=p.code==='RBP';
+                  const gCol=p.g>=4.4?C.green:p.g>=4.0?C.amber:C.red;
+                  return(
+                    <tr key={p.code} style={{background:isRBP?'#F0FAFB':'transparent'}}>
+                      <Td><span style={{color:isRBP?C.teal:C.tp,fontWeight:isRBP?600:400}}>{p.name}</span></Td>
+                      <Td>{p.stars}★</Td>
+                      <Td><Badge color="#F8FAFC" text={lvlColor[p.lvl]||'#64748B'} size={10}>
+                        {{target:'Hotel cliente',direct:'Directo',aspiracional:'Aspiracional',benchmark:'Benchmark'}[p.lvl]||p.lvl}
+                      </Badge></Td>
+                      <Td right><span style={{color:gCol,fontWeight:600}}>{p.g}</span></Td>
+                      <Td right dim>{p.gr.toLocaleString()}</Td>
+                      <Td right highlight={isRBP}>{p.b||<span style={{color:C.tm}}>—</span>}</Td>
+                      <Td right dim>{p.br?.toLocaleString()||'—'}</Td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+          <Card title="Distribución de estrellas (hotel)">
+            <div style={{display:'flex',flexDirection:'column',gap:8}}>
+              {[...starData].reverse().map(d=>{
+                const pct=(d.n/171*100).toFixed(0);
+                const col=d.s==='5★'?C.green:d.s==='4★'?'#34D399':d.s==='3★'?C.amber:d.s==='2★'?'#FB923C':C.red;
+                return(
+                  <div key={d.s} style={{display:'flex',alignItems:'center',gap:10}}>
+                    <span style={{fontSize:12,width:24,color:C.ts}}>{d.s}</span>
+                    <div style={{flex:1,background:'#F1F5F9',borderRadius:4,height:14}}><div style={{width:`${pct}%`,height:'100%',background:col,borderRadius:4}}/></div>
+                    <span style={{fontSize:12,color:C.ts,width:30,textAlign:'right'}}>{pct}%</span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+          <Card title="Idioma de las reseñas">
+            <div style={{display:'flex',flexDirection:'column',gap:6}}>
+              {langData.map(d=>{
+                const pct=(d.n/56*100).toFixed(0);
+                return(
+                  <div key={d.l} style={{display:'flex',alignItems:'center',gap:8}}>
+                    <span style={{fontSize:12,width:24,color:C.ts,fontWeight:500}}>{d.l}</span>
+                    <div style={{flex:1,background:'#F1F5F9',borderRadius:4,height:12}}><div style={{width:`${pct}%`,height:'100%',background:C.teal,borderRadius:4,opacity:0.7}}/></div>
+                    <span style={{fontSize:12,color:C.ts,width:24,textAlign:'right'}}>{d.n}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <p style={{fontSize:11,color:C.tm,margin:'10px 0 0'}}>El mercado alemán (DE) es el más voluminoso y el más crítico</p>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── VISIBILITY ────────────────────────────────────────────────────
+
+// SEO data: all monitored queries
+const serpData = [
+  // google.co.uk — 7 queries
+  { market:'UK', domain:'google.co.uk', query:'all inclusive hotels Playa del Ingles',          rbp:false, pos:null, competitors:['BES','SSB'] },
+  { market:'UK', domain:'google.co.uk', query:'3 star hotels Playa del Ingles all inclusive',   rbp:false, pos:null, competitors:['BES'] },
+  { market:'UK', domain:'google.co.uk', query:'all inclusive hotels Gran Canaria',               rbp:false, pos:null, competitors:['ABV','RPP'] },
+  { market:'UK', domain:'google.co.uk', query:'best hotels Maspalomas Gran Canaria',             rbp:false, pos:null, competitors:[] },
+  { market:'UK', domain:'google.co.uk', query:'family hotels Gran Canaria beach',                rbp:false, pos:null, competitors:['BES','GCP'] },
+  { market:'UK', domain:'google.co.uk', query:'Gran Canaria holidays all inclusive 2025',        rbp:false, pos:null, competitors:[] },
+  { market:'UK', domain:'google.co.uk', query:'Playa del Ingles hotel near beach',               rbp:false, pos:null, competitors:['ABV','BES','SSB'] },
+  // google.de — 5 queries
+  { market:'DE', domain:'google.de', query:'Günstige All Inclusive Hotels Playa del Inglés Last Minute', rbp:true,  pos:2,    competitors:['GRF','BES','WKK','ABC'] },
+  { market:'DE', domain:'google.de', query:'4 Sterne Hotels Maspalomas All Inclusive Angebote',          rbp:false, pos:null, competitors:['ABV','GCP','WKK','BES'] },
+  { market:'DE', domain:'google.de', query:'Familienhotel Gran Canaria direkt am Strand',                rbp:false, pos:null, competitors:['BES','GCP','SSB'] },
+  { market:'DE', domain:'google.de', query:'Gran Canaria Urlaub 2026 All Inclusive Frühbucher',          rbp:false, pos:null, competitors:['GCP','ABV'] },
+  { market:'DE', domain:'google.de', query:'Wellnesshotel San Agustín Gran Canaria mit Meerblick',       rbp:false, pos:null, competitors:['ABV','BES'] },
+];
+
+// GEO data: AI Overviews
+const aiData = [
+  // google.co.uk
+  { market:'UK', query:'3 star hotels Playa del Ingles all inclusive',  rbp:true,  hotels:['RBP','VRL','GRF','ABC','WKK','BES'], sources:['Expedia','Bull Hotels'] },
+  { market:'UK', query:'all inclusive hotels Gran Canaria',             rbp:false, hotels:[], sources:['TripAdvisor'] },
+  { market:'UK', query:'all inclusive hotels Playa del Ingles',        rbp:false, hotels:[], sources:['Expedia','TripAdvisor'] },
+  { market:'UK', query:'best hotels Maspalomas Gran Canaria',           rbp:false, hotels:[], sources:['TheHotelGuru'] },
+  { market:'UK', query:'family hotels Gran Canaria beach',              rbp:false, hotels:['SSB'], sources:['Mumsnet'] },
+  { market:'UK', query:'Gran Canaria holidays all inclusive 2025',      rbp:false, hotels:[], sources:['TUI'] },
+  { market:'UK', query:'Playa del Ingles hotel near beach',             rbp:false, hotels:[], sources:['Booking.com'] },
+  // google.de
+  { market:'DE', query:'Günstige All Inclusive Hotels PDI Last Minute', rbp:true,  hotels:['RBP','GRF','BES','WKK','ABC'], sources:['ltur','lastminute.de'] },
+  { market:'DE', query:'4 Sterne Hotels Maspalomas All Inclusive',      rbp:false, hotels:['ABV','GCP','WKK','BES'], sources:['Booking.com','Princess Hotels'] },
+  { market:'DE', query:'Familienhotel Gran Canaria direkt am Strand',   rbp:false, hotels:['SSB','BES','GCP'], sources:['Sandy Beach','KinderHotel.info','Bull'] },
+  { market:'DE', query:'Gran Canaria Urlaub 2026 All Inclusive Früh.',  rbp:false, hotels:['GCP','ABV'], sources:['Check24','sonnenklar.tv','Eurowings'] },
+  { market:'DE', query:'Wellnesshotel San Agustín Gran Canaria',        rbp:false, hotels:['BES'], sources:['Gloria Palace','Bull Hotels','Meliá'] },
+];
+
+const hotelName = {
+  RBP:'Relaxia Beverly Park', VRL:'LIVVO Veril Playa', GRF:'Hotel Green Field',
+  WKK:'Servatur Waikiki', GCP:'Gran Canaria Princess', ABC:'Abora Continental',
+  ABV:'Abora Buenaventura', BES:'Bull Escorial & Spa', SSB:'Seaside Sandy Beach',
+  RPP:'Riu Papayas', RPM:'Riu Palace Maspalomas',
+};
+
+function Visibility(){
+  const [tab, setTab] = useState('seo');
+  const [market, setMarket] = useState('all');
+
+  // Filter helpers
+  const serpFiltered = market==='all' ? serpData : serpData.filter(d=>d.market===market);
+  const aiFiltered   = market==='all' ? aiData   : aiData.filter(d=>d.market===market);
+
+  // Summary stats
+  const serpUK = serpData.filter(d=>d.market==='UK');
+  const serpDE = serpData.filter(d=>d.market==='DE');
+  const aiRbpCount = aiData.filter(d=>d.rbp).length;
+  const serpRbpCount = serpData.filter(d=>d.rbp).length;
+
+  // Competitor leaderboard for SEO
+  const compSEO = {};
+  serpData.forEach(d=>d.competitors.forEach(c=>{
+    if(!compSEO[c]) compSEO[c]={uk:0,de:0};
+    if(d.market==='UK') compSEO[c].uk++;
+    else compSEO[c].de++;
+  }));
+  const compSEOList = Object.entries(compSEO)
+    .map(([code,v])=>({code,total:v.uk+v.de,...v}))
+    .sort((a,b)=>b.total-a.total);
+
+  // Competitor leaderboard for GEO
+  const compGEO = {};
+  aiData.forEach(d=>d.hotels.filter(h=>h!=='RBP').forEach(c=>{
+    if(!compGEO[c]) compGEO[c]={uk:0,de:0};
+    if(d.market==='UK') compGEO[c].uk++;
+    else compGEO[c].de++;
+  }));
+  const compGEOList = Object.entries(compGEO)
+    .map(([code,v])=>({code,total:v.uk+v.de,...v}))
+    .sort((a,b)=>b.total-a.total);
+
+  const TabBtn = ({id,label,sub}) => (
+    <button onClick={()=>setTab(id)} style={{
+      flex:1, padding:'14px 20px', border:'none', cursor:'pointer',
+      background:tab===id?C.navy:'#F8FAFC',
+      borderBottom:tab===id?`3px solid ${C.teal}`:'3px solid transparent',
+      textAlign:'left', transition:'all 0.15s',
+    }}>
+      <div style={{fontSize:13,fontWeight:700,color:tab===id?'#fff':C.tp,marginBottom:3}}>{label}</div>
+      <div style={{fontSize:11,color:tab===id?'rgba(255,255,255,0.55)':C.tm}}>{sub}</div>
+    </button>
+  );
+
+  const MktBtn = ({id,label}) => (
+    <button onClick={()=>setMarket(id)} style={{
+      padding:'5px 14px', borderRadius:6, border:`1px solid ${market===id?C.teal:C.border}`,
+      background:market===id?C.teal:C.card, color:market===id?'#fff':C.ts,
+      fontSize:11, fontWeight:market===id?600:400, cursor:'pointer',
+    }}>{label}</button>
+  );
+
+  // RBP pill
+  const RBPBadge = () => (
+    <span style={{display:'inline-flex',alignItems:'center',gap:4,background:'#EFF9FB',
+      border:`1px solid ${C.teal}`,borderRadius:99,padding:'2px 8px',fontSize:10,
+      fontWeight:700,color:C.teal,whiteSpace:'nowrap'}}>
+      ✓ Relaxia aparece
+    </span>
+  );
+  const MissingBadge = () => (
+    <span style={{display:'inline-flex',alignItems:'center',gap:4,background:'#FEF2F2',
+      border:'1px solid #FECACA',borderRadius:99,padding:'2px 8px',fontSize:10,
+      fontWeight:600,color:'#DC2626',whiteSpace:'nowrap'}}>
+      — No aparece
+    </span>
+  );
+
+  return (
+    <div>
+      <SectionTitle sub="Presencia orgánica en buscadores y en los resúmenes generados por IA · 12 búsquedas monitorizadas">
+        Posicionamiento en Google
+      </SectionTitle>
+
+      {/* Top KPIs */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:20}}>
+        {[
+          {label:'Búsquedas en Google UK',     value:'0 / 7',  sub:'sin una sola aparición orgánica',    color:C.red},
+          {label:'Búsquedas en Google DE',     value:'1 / 5',  sub:'posición #2 en "last minute" barato',color:C.amber},
+          {label:'Resúmenes IA con Relaxia',   value:'2 / 12', sub:'solo en contexto "precio bajo"',     color:C.amber},
+          {label:'Competidor más visible',     value:'Bull Escorial', sub:'7 apariciones en SEO + GEO', color:C.navy},
+        ].map((m,i)=>(
+          <Metric key={i} label={m.label} value={m.value} sub={m.sub} color={m.color}/>
+        ))}
+      </div>
+
+      {/* Tab selector */}
+      <div style={{display:'flex',marginBottom:0,borderRadius:'10px 10px 0 0',overflow:'hidden',border:`1px solid ${C.border}`,borderBottom:'none'}}>
+        <TabBtn id="seo" label="1 — Search Engine Optimization (SEO)"
+          sub="Resultados orgánicos · posición en páginas de Google"/>
+        <TabBtn id="geo" label="2 — Generative Engine Optimization (GEO)"
+          sub="Resúmenes generados por IA · quién aparece en los textos de Google"/>
+      </div>
+
+      <div style={{background:C.card,border:`1px solid ${C.border}`,borderTop:'none',borderRadius:'0 0 10px 10px',padding:'20px'}}>
+
+        {/* Market filter */}
+        <div style={{display:'flex',gap:6,marginBottom:16,alignItems:'center'}}>
+          <span style={{fontSize:11,color:C.tm,marginRight:4}}>Mercado:</span>
+          <MktBtn id="all" label="Todos"/>
+          <MktBtn id="UK" label="🇬🇧 Reino Unido"/>
+          <MktBtn id="DE" label="🇩🇪 Alemania"/>
+        </div>
+
+        {/* ── SEO TAB ── */}
+        {tab==='seo' && (
+          <div>
+            {/* Situation summary */}
+            <div style={{background:'#F8FAFC',border:`1px solid ${C.border}`,borderRadius:10,padding:'12px 16px',marginBottom:18,display:'flex',gap:10}}>
+              <span style={{fontSize:16,flexShrink:0}}>📍</span>
+              <p style={{margin:0,fontSize:13,color:C.ts,lineHeight:1.65}}>
+                {market==='UK' && 'Relaxia no aparece en ninguna de las 7 búsquedas monitorizadas en Google Reino Unido — el principal mercado emisor de turistas a Gran Canaria. Bull Escorial aparece en 4 de esas búsquedas. La ausencia en UK es la brecha de visibilidad más grave del hotel.'}
+                {market==='DE' && 'En Alemania, Relaxia solo aparece en 1 de 5 búsquedas monitorizadas, en una query de "hoteles baratos last minute" (posición #2). Nunca aparece en búsquedas de calidad, familia o wellness. Gran Canaria Princess y Bull Escorial dominan el mercado alemán con presencia en 3 búsquedas cada uno.'}
+                {market==='all' && 'Relaxia solo aparece en 1 de 12 búsquedas monitorizadas en Google, en una query alemana de "hoteles baratos last minute". En Reino Unido — el mercado más importante — la presencia es nula. Los competidores más visibles son Bull Escorial (7 apariciones totales en SEO + GEO), Gran Canaria Princess (6) y Abora Buenaventura (4).'}
+              </p>
+            </div>
+
+            <div style={{display:'grid',gridTemplateColumns:'1fr auto',gap:16,alignItems:'start'}}>
+              {/* Query table */}
+              <div>
+                <table style={{width:'100%',borderCollapse:'collapse'}}>
+                  <thead>
+                    <tr style={{background:'#F8FAFC'}}>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'left',borderBottom:`1px solid ${C.border}`}}>Búsqueda monitorizad</th>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'center',borderBottom:`1px solid ${C.border}`}}>Mercado</th>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'center',borderBottom:`1px solid ${C.border}`}}>Relaxia</th>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'left',borderBottom:`1px solid ${C.border}`}}>Competidores visibles</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {serpFiltered.map((d,i)=>(
+                      <tr key={i} style={{background:d.rbp?'#EFF9FB':'transparent'}}>
+                        <td style={{padding:'9px 12px',fontSize:12,color:C.tp,borderBottom:`1px solid ${C.border}`,maxWidth:260}}>
+                          <span style={{fontStyle:'italic',color:C.ts}}>"{d.query}"</span>
+                        </td>
+                        <td style={{padding:'9px 12px',textAlign:'center',borderBottom:`1px solid ${C.border}`}}>
+                          <span style={{fontSize:11,fontWeight:600,color:C.ts}}>{d.market==='UK'?'🇬🇧 UK':'🇩🇪 DE'}</span>
+                        </td>
+                        <td style={{padding:'9px 12px',textAlign:'center',borderBottom:`1px solid ${C.border}`}}>
+                          {d.rbp
+                            ? <span style={{display:'inline-flex',alignItems:'center',gap:3,background:'#EFF9FB',border:`1px solid ${C.teal}`,borderRadius:99,padding:'2px 8px',fontSize:10,fontWeight:700,color:C.teal}}>✓ pos.{d.pos}</span>
+                            : <span style={{display:'inline-flex',alignItems:'center',gap:3,background:'#FEF2F2',border:'1px solid #FECACA',borderRadius:99,padding:'2px 8px',fontSize:10,color:'#DC2626'}}>— ausente</span>
+                          }
+                        </td>
+                        <td style={{padding:'9px 12px',borderBottom:`1px solid ${C.border}`}}>
+                          {d.competitors.length===0
+                            ? <span style={{fontSize:11,color:C.tm}}>Ninguno del set</span>
+                            : <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                                {d.competitors.map(c=>(
+                                  <span key={c} title={hotelName[c]||c}
+                                    style={{fontSize:10,fontWeight:600,background:'#F1F5F9',border:`1px solid ${C.border}`,
+                                      borderRadius:4,padding:'2px 6px',color:C.ts,cursor:'default'}}>
+                                    {c}
+                                  </span>
+                                ))}
+                              </div>
+                          }
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Competitor leaderboard */}
+              <div style={{minWidth:180}}>
+                <div style={{fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:10}}>Ranking de competidores</div>
+                <div style={{display:'flex',flexDirection:'column',gap:5}}>
+                  {compSEOList.filter(c=>market==='all'||serpData.filter(d=>d.market===market&&d.competitors.includes(c.code)).length>0).map((c,i)=>{
+                    const cnt = market==='UK'?c.uk:market==='DE'?c.de:c.total;
+                    const max = compSEOList[0]?.total||1;
+                    return(
+                      <div key={c.code} style={{background:'#F8FAFC',border:`1px solid ${C.border}`,borderRadius:8,padding:'7px 10px'}}>
+                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                          <span style={{fontSize:11,fontWeight:600,color:C.tp}} title={hotelName[c.code]}>{c.code}</span>
+                          <span style={{fontSize:10,color:C.ts}}>{market==='UK'?c.uk:market==='DE'?c.de:c.total} búsq.</span>
+                        </div>
+                        <div style={{background:'#E2E8F0',borderRadius:3,height:5}}>
+                          <div style={{width:`${(cnt/max)*100}%`,height:'100%',background:C.teal,borderRadius:3}}/>
+                        </div>
+                        <div style={{fontSize:9,color:C.tm,marginTop:3}}>{hotelName[c.code]}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── GEO TAB ── */}
+        {tab==='geo' && (
+          <div>
+            {/* Situation summary */}
+            <div style={{background:'#F8FAFC',border:`1px solid ${C.border}`,borderRadius:10,padding:'12px 16px',marginBottom:18,display:'flex',gap:10}}>
+              <span style={{fontSize:16,flexShrink:0}}>📍</span>
+              <p style={{margin:0,fontSize:13,color:C.ts,lineHeight:1.65}}>
+                {market==='UK' && 'En Reino Unido, Relaxia aparece en 1 de 7 resúmenes generados por IA — en la búsqueda "3 star hotels all inclusive Playa del Inglés". El texto del resumen lo describe positivamente (buena comida, piscinas, personal amable). En las otras 6 búsquedas, Google genera un texto con recomendaciones en el que Relaxia no está presente.'}
+                {market==='DE' && 'En Alemania, Relaxia aparece en 1 de 5 resúmenes de IA — en "Günstige All Inclusive Hotels Last Minute" (hoteles baratos last minute). Esta asociación con precios bajos y last minute contradice la estrategia de posicionamiento premium del hotel. Bull Escorial, Gran Canaria Princess y Abora Buenaventura tienen presencia en 2–3 resúmenes cada uno.'}
+                {market==='all' && 'Relaxia aparece en 2 de 12 resúmenes de IA generados por Google: una vez en UK en búsquedas de "3 estrellas todo incluido" y una vez en DE en "hoteles baratos last minute". La segunda mención es problemática — asocia el hotel con precio bajo, lo opuesto al posicionamiento deseado. Bull Escorial es el hotel del set más mencionado en resúmenes de IA con 5 apariciones.'}
+              </p>
+            </div>
+
+            <div style={{display:'grid',gridTemplateColumns:'1fr auto',gap:16,alignItems:'start'}}>
+              {/* AI Overview table */}
+              <div>
+                <table style={{width:'100%',borderCollapse:'collapse'}}>
+                  <thead>
+                    <tr style={{background:'#F8FAFC'}}>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'left',borderBottom:`1px solid ${C.border}`}}>Búsqueda</th>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'center',borderBottom:`1px solid ${C.border}`}}>Mercado</th>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'center',borderBottom:`1px solid ${C.border}`}}>Relaxia</th>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'left',borderBottom:`1px solid ${C.border}`}}>Hoteles mencionados en el resumen</th>
+                      <th style={{padding:'8px 12px',fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',textAlign:'left',borderBottom:`1px solid ${C.border}`}}>Fuentes citadas</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {aiFiltered.map((d,i)=>(
+                      <tr key={i} style={{background:d.rbp?'#EFF9FB':'transparent'}}>
+                        <td style={{padding:'9px 12px',fontSize:12,color:C.tp,borderBottom:`1px solid ${C.border}`,maxWidth:220}}>
+                          <span style={{fontStyle:'italic',color:C.ts}}>"{d.query}"</span>
+                        </td>
+                        <td style={{padding:'9px 12px',textAlign:'center',borderBottom:`1px solid ${C.border}`}}>
+                          <span style={{fontSize:11,fontWeight:600,color:C.ts}}>{d.market==='UK'?'🇬🇧 UK':'🇩🇪 DE'}</span>
+                        </td>
+                        <td style={{padding:'9px 12px',textAlign:'center',borderBottom:`1px solid ${C.border}`}}>
+                          {d.rbp ? <RBPBadge/> : <MissingBadge/>}
+                        </td>
+                        <td style={{padding:'9px 12px',borderBottom:`1px solid ${C.border}`}}>
+                          {d.hotels.length===0
+                            ? <span style={{fontSize:11,color:C.tm}}>Ninguno del set</span>
+                            : <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                                {d.hotels.map(h=>(
+                                  <span key={h} title={hotelName[h]||h}
+                                    style={{fontSize:10,fontWeight:600,
+                                      background:h==='RBP'?'#EFF9FB':'#F1F5F9',
+                                      border:`1px solid ${h==='RBP'?C.teal:C.border}`,
+                                      color:h==='RBP'?C.teal:C.ts,
+                                      borderRadius:4,padding:'2px 6px',cursor:'default'}}>
+                                    {h==='RBP'?'✓ RBP':h}
+                                  </span>
+                                ))}
+                              </div>
+                          }
+                        </td>
+                        <td style={{padding:'9px 12px',borderBottom:`1px solid ${C.border}`}}>
+                          <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                            {d.sources.map(s=>(
+                              <span key={s} style={{fontSize:9,color:C.tm,background:'#F1F5F9',padding:'2px 5px',borderRadius:3}}>{s}</span>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* GEO leaderboard */}
+              <div style={{minWidth:180}}>
+                <div style={{fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:10}}>Presencia en resúmenes IA</div>
+                {/* RBP first */}
+                <div style={{background:'#EFF9FB',border:`1px solid ${C.teal}`,borderRadius:8,padding:'7px 10px',marginBottom:6}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                    <span style={{fontSize:11,fontWeight:700,color:C.teal}}>RBP</span>
+                    <span style={{fontSize:10,color:C.teal}}>2 aparic.</span>
+                  </div>
+                  <div style={{background:'#BAE6FD',borderRadius:3,height:5}}>
+                    <div style={{width:`${(2/5)*100}%`,height:'100%',background:C.teal,borderRadius:3}}/>
+                  </div>
+                  <div style={{fontSize:9,color:C.tm,marginTop:3}}>Relaxia Beverly Park</div>
+                </div>
+                {compGEOList.filter(c=>market==='all'||aiData.filter(d=>d.market===market&&d.hotels.includes(c.code)).length>0).map((c)=>{
+                  const cnt = market==='UK'?c.uk:market==='DE'?c.de:c.total;
+                  const max = 5;
+                  return(
+                    <div key={c.code} style={{background:'#F8FAFC',border:`1px solid ${C.border}`,borderRadius:8,padding:'7px 10px',marginBottom:5}}>
+                      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                        <span style={{fontSize:11,fontWeight:600,color:C.tp}} title={hotelName[c.code]}>{c.code}</span>
+                        <span style={{fontSize:10,color:C.ts}}>{cnt} aparic.</span>
+                      </div>
+                      <div style={{background:'#E2E8F0',borderRadius:3,height:5}}>
+                        <div style={{width:`${(cnt/max)*100}%`,height:'100%',background:'#6D28D9',borderRadius:3}}/>
+                      </div>
+                      <div style={{fontSize:9,color:C.tm,marginTop:3}}>{hotelName[c.code]}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* GEO insight */}
+            <div style={{marginTop:16,padding:'12px 16px',background:'#FFF7ED',border:'1px solid #FED7AA',borderRadius:8,display:'flex',gap:10}}>
+              <span style={{fontSize:15,flexShrink:0}}>⚠️</span>
+              <p style={{margin:0,fontSize:12,color:'#92400E',lineHeight:1.65}}>
+                <strong>El problema no es solo aparecer — es cómo apareces.</strong> Relaxia se menciona en Alemania en búsquedas de "hoteles baratos last minute". Google aprende de estas asociaciones y las refuerza. Para cambiar cómo la IA describe al hotel, hay que generar contenido propio en inglés y alemán, obtener menciones en medios especializados y gestionar activamente la puntuación de reseñas.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+// ── EVENTS ────────────────────────────────────────────────────────
+function Events(){
+  const ic={very_high:'#DC2626',high:'#D97706',medium:'#2563EB',low:'#6B7280'};
+  const ib={very_high:'#FEF2F2',high:'#FFFBEB',medium:'#EFF6FF',low:'#F9FAFB'};
+  const il={very_high:'Muy alto',high:'Alto',medium:'Medio',low:'Bajo'};
+  return(
+    <div>
+      <SectionTitle sub="Calendario de eventos en Gran Canaria con impacto en demanda hotelera 2026">Eventos de demanda en 2026</SectionTitle>
+      <Insight type="info">
+        El <strong>Maspalomas Pride</strong> (4–10 mayo) y el <strong>Winter Pride</strong> (2–8 noviembre) son los dos grandes momentos de demanda máxima. En ambos periodos, el hotel puede anticipar alta ocupación y subir precios con antelación. El viajero LGBTQ+ que acude a estos eventos tiene poder adquisitivo alto y valora la ubicación cerca del paseo marítimo y las zonas de ambiente — una ventaja real del hotel.
+      </Insight>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:20}}>
+        <Metric label="Eventos de impacto muy alto" value="3" sub="Pride Mayo · Desfile Pride · Winter Pride" color={C.red}/>
+        <Metric label="Eventos de impacto alto" value="5" sub="Carnaval, Cabalgata, Semana Santa…" color={C.amber}/>
+        <Metric label="Eventos monitorizados 2026" value="28" sub="en toda Gran Canaria"/>
+      </div>
+      <Card title="Calendario anual de eventos 2026" style={{marginBottom:16}}>
+        <div style={{overflowX:'auto'}}>
+          <div style={{minWidth:700,paddingBottom:4}}>
+            <div style={{display:'flex',marginBottom:6}}>
+              {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].map(m=>(
+                <div key={m} style={{flex:1,fontSize:10,color:C.ts,textAlign:'center',fontWeight:500}}>{m}</div>
+              ))}
+            </div>
+            {events.map((e,i)=>{
+              const months={Ene:0,Feb:1,Mar:2,Abr:3,May:4,Jun:5,Jul:6,Ago:7,Sep:8,Oct:9,Nov:10,Dic:11};
+              const pd=s=>{const[d,m]=s.split(' ');return months[m]+(parseInt(d)/31);};
+              const left=pd(e.start)/12*100,right=pd(e.end)/12*100;
+              const width=Math.max(right-left,1.5/12*100);
+              return(
+                <div key={i} style={{position:'relative',height:17,marginBottom:3}}>
+                  <div title={`${e.name} · ${e.start}${e.start!==e.end?' → '+e.end:''}`}
+                       style={{position:'absolute',left:`${left}%`,width:`${width}%`,minWidth:4,height:'100%',background:ic[e.impact],borderRadius:3,opacity:0.85,display:'flex',alignItems:'center',paddingLeft:4,overflow:'hidden'}}>
+                    <span style={{fontSize:8,color:'#fff',fontWeight:600,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{e.name}</span>
+                  </div>
+                </div>
+              );
+            })}
+            <div style={{display:'flex',gap:14,marginTop:8}}>
+              {Object.entries(il).map(([k,v])=>(
+                <span key={k} style={{display:'flex',alignItems:'center',gap:4,fontSize:10,color:C.ts}}>
+                  <span style={{width:10,height:10,background:ic[k],borderRadius:2,display:'inline-block'}}/>{v}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Card>
+      <Card title="Todos los eventos monitorizados">
+        <div style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse'}}>
+            <thead><tr><Th>Evento</Th><Th>Inicio</Th><Th>Fin</Th><Th>Zona</Th><Th>Impacto en demanda</Th></tr></thead>
+            <tbody>
+              {events.map((e,i)=>(
+                <tr key={i}>
+                  <Td bold={e.impact==='very_high'}>{e.name}</Td>
+                  <Td>{e.start}</Td><Td>{e.end}</Td><Td>{e.zone}</Td>
+                  <Td><span style={{display:'inline-flex',alignItems:'center',gap:4,background:ib[e.impact],color:ic[e.impact],fontSize:11,fontWeight:600,padding:'2px 10px',borderRadius:99}}><Dot impact={e.impact}/>{il[e.impact]}</span></Td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ── MARKET ────────────────────────────────────────────────────────
+function Market(){
+  return(
+    <div>
+      <SectionTitle sub="Contexto del mercado hotelero y del alquiler vacacional en Maspalomas / Playa del Inglés">Contexto del mercado</SectionTitle>
+      <Insight type="info">
+        El mercado de Booking en la zona tiene una puntuación media de 8.56, ligeramente por encima del 8.5 del hotel. El dato más relevante: el <strong>58% de los hoteles del mercado tienen certificado de sostenibilidad de Booking</strong>, y el hotel no. En Airbnb, la competencia vacacional destaca en comunicación y check-in (4.89/5) — áreas donde los hoteles suelen quedarse cortos frente a los apartamentos.
+      </Insight>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:20}}>
+        <Metric label="Propiedades en Booking (zona)" value="68" sub="Playa del Inglés + Maspalomas"/>
+        <Metric label="Puntuación media del mercado" value="8.56" sub="El hotel tiene 8.50"/>
+        <Metric label="Con certificado sostenible" value="58%" sub="El hotel no tiene ninguno" color={C.red}/>
+        <Metric label="Listados Airbnb en la zona" value="348" sub="media 4.86/5 · precio €28–1.864/n"/>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+        <Card title="Mercado Booking — distribución por banda de puntuación">
+          {[
+            {band:'Excepcional 9.0+',hotels:5,example:'Riu Palace (9.0)'},
+            {band:'Excelente 8.5–9.0',hotels:16,example:'Bull Escorial (8.7), Riu Papayas (8.6)'},
+            {band:'Muy bueno 8.0–8.5',hotels:8,example:'Relaxia Beverly Park (8.5) ← aquí'},
+            {band:'Bueno 7.0–8.0',hotels:5,example:'LIVVO Veril (7.5), Waikiki (7.9)'},
+          ].map((r,i)=>(
+            <div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 0',borderBottom:`1px solid ${C.border}`}}>
+              <div>
+                <div style={{fontSize:13,fontWeight:r.band.includes('Muy bueno')?600:400,color:r.band.includes('Muy bueno')?C.teal:C.tp}}>{r.band}</div>
+                <div style={{fontSize:11,color:C.ts}}>{r.example}</div>
+              </div>
+              <div style={{fontSize:20,fontWeight:600,color:C.tp}}>{r.hotels}</div>
+            </div>
+          ))}
+        </Card>
+        <Card title="Puntuaciones por categoría — Airbnb Maspalomas">
+          {[
+            {cat:'Check-in',v:4.89},{cat:'Comunicación',v:4.89},
+            {cat:'Limpieza',v:4.86},{cat:'Exactitud descripción',v:4.86},
+            {cat:'Ubicación',v:4.77},{cat:'Relación calidad-precio',v:4.74},
+          ].map((r,i)=>(
+            <div key={i} style={{display:'flex',alignItems:'center',gap:10,padding:'7px 0',borderBottom:'1px solid #F1F5F9'}}>
+              <span style={{fontSize:12,color:C.ts,width:135,flexShrink:0}}>{r.cat}</span>
+              <div style={{flex:1,background:'#F1F5F9',borderRadius:4,height:8}}><div style={{width:`${(r.v/5)*100}%`,height:'100%',background:'#818CF8',borderRadius:4}}/></div>
+              <span style={{fontSize:13,fontWeight:600,color:C.tp,width:32,textAlign:'right'}}>{r.v}</span>
+            </div>
+          ))}
+          <p style={{fontSize:11,color:C.tm,margin:'10px 0 0'}}>El alquiler vacacional destaca en la experiencia sin fricción (check-in, comunicación)</p>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// ── PROPERTY ──────────────────────────────────────────────────────
+function Property(){
+  return(
+    <div>
+      <SectionTitle sub="Comparativa de características del hotel frente a competidores del mercado">Características y ventajas del producto</SectionTitle>
+      <Insight type="warning">
+        El hotel tiene <strong>acceso directo a la playa y 3 piscinas</strong> — ventajas que solo comparte con LIVVO Veril Playa. Pero carece de spa (4 competidores sí lo tienen), certificación sostenible (58% del mercado) y visibilidad digital. Paradójicamente, estas ventajas físicas no se comunican de forma efectiva: el hotel no aparece en las búsquedas de "hotel cerca de la playa" en Google.
+      </Insight>
+      <Card title="Tabla comparativa de características" sub="Desplaza horizontalmente para ver todos los hoteles · hotel cliente destacado en azul" style={{marginBottom:16}}>
+        <div style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',minWidth:860}}>
+            <thead>
+              <tr>
+                <Th w={155}>Característica</Th>
+                {featCodes.map(c=>{
+                  const p=props.find(x=>x.code===c);
+                  return(
+                    <th key={c} style={{padding:'8px 5px',textAlign:'center',fontSize:10,fontWeight:600,color:c==='RBP'?C.teal:C.ts,borderBottom:`1px solid ${C.border}`,background:c==='RBP'?'#F0FAFB':'transparent',whiteSpace:'nowrap',minWidth:90}}>
+                      <div style={{lineHeight:1.3}}>{p?.name?.split(' ').slice(0,3).join(' ')}</div>
+                      <div style={{fontWeight:400,fontSize:9,marginTop:2}}>{p?.stars}★</div>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {featureRows.map((row,i)=>(
+                <tr key={i} style={{background:i%2===0?'#F8FAFC':'#fff'}}>
+                  <td style={{padding:'7px 10px',fontSize:12,color:C.ts,fontWeight:500,borderBottom:'1px solid #F1F5F9',whiteSpace:'nowrap'}}>{row.label}</td>
+                  {featCodes.map(c=>{
+                    const val=row.fn(c),isRBP=c==='RBP';
+                    if(row.bool)return(
+                      <td key={c} style={{textAlign:'center',padding:'7px 5px',borderBottom:'1px solid #F1F5F9',background:isRBP?'#F0FAFB':'transparent'}}>
+                        <span style={{fontSize:14,color:val===true?C.green:'#CBD5E1'}}>{val===true?'✓':'–'}</span>
+                      </td>
+                    );
+                    if(row.score){
+                      const col=val>=4.4?C.green:val>=4.0?C.amber:val?C.red:C.tm;
+                      return <td key={c} style={{textAlign:'center',padding:'7px 5px',borderBottom:'1px solid #F1F5F9',background:isRBP?'#F0FAFB':'transparent'}}><span style={{fontSize:12,fontWeight:isRBP?600:400,color:isRBP?col:C.ts}}>{val||'—'}</span></td>;
+                    }
+                    return <td key={c} style={{textAlign:'center',padding:'7px 5px',fontSize:12,borderBottom:'1px solid #F1F5F9',background:isRBP?'#F0FAFB':'transparent',color:isRBP?C.teal:C.tp,fontWeight:isRBP?600:400}}>{val}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+      <Card title="Brechas y ventajas detectadas">
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12}}>
+          {[
+            {label:'Spa / wellness',who:'4 de 11 competidores lo tienen',note:'Bull Escorial incluye spa gratis — su diferenciador clave'},
+            {label:'Certificado de sostenibilidad',who:'58% del mercado Booking',note:'El viajero europeo valora cada vez más este criterio al elegir hotel'},
+            {label:'Bebidas premium en todo incluido',who:'Bull, Waikiki AI+, Riu Papayas, Riu Palace',note:'El hotel incluye bebidas locales, percibido como inferior por el cliente europeo'},
+            {label:'Restaurante à la carte',who:'Riu Papayas, Riu Palace, Bull Escorial',note:'Solo presente en los hoteles benchmark del set'},
+            {label:'Visibilidad en Google',who:'Bull Escorial aparece en 4 búsquedas',note:'El hotel solo aparece en 2 búsquedas de 12, en contexto precio bajo'},
+          ].map((g,i)=>(
+            <div key={i} style={{background:'#FFF7ED',border:'1px solid #FED7AA',borderRadius:8,padding:'12px 14px'}}>
+              <div style={{fontSize:10,fontWeight:600,color:'#C2410C',textTransform:'uppercase',letterSpacing:'0.04em',marginBottom:4}}>Brecha</div>
+              <div style={{fontSize:13,fontWeight:600,color:C.tp,marginBottom:3}}>{g.label}</div>
+              <div style={{fontSize:12,color:C.ts,marginBottom:4}}>{g.who}</div>
+              <div style={{fontSize:11,color:'#78350F'}}>{g.note}</div>
+            </div>
+          ))}
+          <div style={{background:'#F0FDF4',border:'1px solid #A7F3D0',borderRadius:8,padding:'12px 14px'}}>
+            <div style={{fontSize:10,fontWeight:600,color:'#065F46',textTransform:'uppercase',letterSpacing:'0.04em',marginBottom:4}}>Ventaja diferencial</div>
+            <div style={{fontSize:13,fontWeight:600,color:C.tp,marginBottom:3}}>Acceso directo a la playa</div>
+            <div style={{fontSize:12,color:C.ts,marginBottom:4}}>Solo este hotel y LIVVO Veril Playa</div>
+            <div style={{fontSize:11,color:'#065F46'}}>100m de playa El Veril — diferenciador infrautilizado en comunicación digital</div>
+          </div>
+          <div style={{background:'#F0FDF4',border:'1px solid #A7F3D0',borderRadius:8,padding:'12px 14px'}}>
+            <div style={{fontSize:10,fontWeight:600,color:'#065F46',textTransform:'uppercase',letterSpacing:'0.04em',marginBottom:4}}>Ventaja diferencial</div>
+            <div style={{fontSize:13,fontWeight:600,color:C.tp,marginBottom:3}}>3 piscinas (1 climatizada en invierno)</div>
+            <div style={{fontSize:12,color:C.ts,marginBottom:4}}>Solo este hotel y Abora Buenaventura</div>
+            <div style={{fontSize:11,color:'#065F46'}}>La piscina climatizada es un diferenciador real en temporada baja</div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ── VOICE ─────────────────────────────────────────────────────────
+function Voice(){
+  const [selected,setSelected]=useState(null);
+  const maxN=issues[0].n;
+
+  const filteredReviews=useMemo(()=>{
+    if(!selected) return negReviews;
+    return negReviews.filter(r=>Array.isArray(r.tags)&&r.tags.includes(selected));
+  },[selected]);
+
+  const selectedLabel=selected?issues.find(i=>i.tag===selected)?.label:null;
+
+  return(
+    <div>
+      <SectionTitle sub="Análisis de 20 reseñas negativas (1–3 estrellas) con texto completo · Google Maps · enero 2025 – febrero 2026">¿Qué preocupa al cliente?</SectionTitle>
+      <Insight type="alert">
+        El <strong>estado de las habitaciones</strong> es el problema más frecuente (en el 48% de las reseñas negativas) y aparece en todos los rangos de puntuación. El <strong>servicio en recepción</strong> es el más peligroso por impacto: 3 de sus 7 menciones vienen de reseñas de 1 estrella que denuncian incidentes graves como un robo no atendido o personal entrando sin avisar. Estos no son problemas puntuales — son patrones que se repiten en distintos idiomas y fechas.
+      </Insight>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:20}}>
+        <Metric label="Reseñas analizadas" value="20" sub="de 171 reseñas con texto"/>
+        <Metric label="Críticas graves (1 estrella)" value="6" sub="con incidentes serios" color={C.red}/>
+        <Metric label="Moderadas (2 estrellas)" value="9" sub="con problemas claros" color={C.amber}/>
+        <Metric label="Problema más frecuente" value="Habitaciones" sub="en el 48% de las negativas"/>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'5fr 7fr',gap:16}}>
+        <Card title="Frecuencia de problemas" sub="Haz clic en un problema para ver las reseñas donde aparece">
+          <div style={{display:'flex',flexDirection:'column',gap:5}}>
+            {issues.map(issue=>{
+              const isSel=selected===issue.tag;
+              const reviewCount=negReviews.filter(r=>Array.isArray(r.tags)&&r.tags.includes(issue.tag)).length;
+              return(
+                <div key={issue.tag} onClick={()=>setSelected(isSel?null:issue.tag)}
+                     style={{cursor:'pointer',padding:'9px 11px',borderRadius:8,border:`1.5px solid ${isSel?C.teal:C.border}`,background:isSel?'#F0FAFB':'#FAFAFA'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5}}>
+                    <span style={{fontSize:12,fontWeight:isSel?600:400,color:isSel?C.teal:C.tp,lineHeight:1.3}}>{issue.label}</span>
+                    <div style={{display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
+                      {reviewCount>0&&<span style={{fontSize:10,color:C.ts,background:'rgba(0,0,0,0.06)',padding:'1px 6px',borderRadius:99}}>{reviewCount} reseña{reviewCount!==1?'s':''}</span>}
+                      <span style={{fontSize:13,fontWeight:700,color:isSel?C.teal:C.tp}}>{issue.n}</span>
+                    </div>
+                  </div>
+                  <div style={{height:6,background:'#E2E8F0',borderRadius:3,overflow:'hidden'}}>
+                    <div style={{display:'flex',height:'100%'}}>
+                      <div style={{width:`${(issue.critical/maxN)*100}%`,background:C.red,minWidth:issue.critical?3:0}}/>
+                      <div style={{width:`${(issue.moderate/maxN)*100}%`,background:C.amber,minWidth:issue.moderate?3:0}}/>
+                      <div style={{width:`${(issue.minor/maxN)*100}%`,background:'#60A5FA',minWidth:issue.minor?3:0}}/>
+                    </div>
+                  </div>
+                  <div style={{display:'flex',gap:8,marginTop:4}}>
+                    {issue.critical>0&&<span style={{fontSize:10,color:C.red,fontWeight:500}}>{issue.critical} crítica{issue.critical!==1?'s':''}</span>}
+                    {issue.moderate>0&&<span style={{fontSize:10,color:C.amber,fontWeight:500}}>{issue.moderate} moderada{issue.moderate!==1?'s':''}</span>}
+                    {issue.minor>0&&<span style={{fontSize:10,color:'#2563EB',fontWeight:500}}>{issue.minor} menor{issue.minor!==1?'es':''}</span>}
+                  </div>
+                </div>
+              );
+            })}
+            <div style={{display:'flex',gap:12,marginTop:4,flexWrap:'wrap'}}>
+              {[{c:C.red,l:'Crítica (1★)'},{c:C.amber,l:'Moderada (2★)'},{c:'#60A5FA',l:'Menor (3★)'}].map(x=>(
+                <span key={x.l} style={{display:'flex',alignItems:'center',gap:4,fontSize:10,color:C.ts}}>
+                  <span style={{width:8,height:8,background:x.c,borderRadius:2,display:'inline-block'}}/>{x.l}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Card>
+
+        <Card title={selectedLabel?`Reseñas que mencionan: "${selectedLabel}"`:'Todas las reseñas negativas analizadas'}
+              sub={selectedLabel?`${filteredReviews.length} reseña${filteredReviews.length!==1?'s':''} con este problema · haz clic de nuevo en el mismo problema para ver todas`:'Haz clic en un problema de la izquierda para filtrar'}>
+          {selected&&(
+            <div style={{marginBottom:10}}>
+              <button onClick={()=>setSelected(null)} style={{fontSize:12,color:C.teal,background:'none',border:`1px solid ${C.teal}`,borderRadius:99,padding:'4px 14px',cursor:'pointer'}}>
+                ← Ver todas las reseñas
+              </button>
+            </div>
+          )}
+          <div style={{display:'flex',flexDirection:'column',gap:10,maxHeight:570,overflowY:'auto',paddingRight:2}}>
+            {filteredReviews.length===0&&(
+              <div style={{padding:'32px',textAlign:'center',color:C.tm,fontSize:13}}>
+                No hay reseñas con texto completo para este problema en la muestra analizada.
+              </div>
+            )}
+            {filteredReviews.map(r=>{
+              const sc={
+                critical:{bg:'#FEF2F2',bc:'#FCA5A5',tc:'#991B1B',label:'Crítica'},
+                moderate:{bg:'#FFFBEB',bc:'#FCD34D',tc:'#92400E',label:'Moderada'},
+                minor:{bg:'#EFF6FF',bc:'#93C5FD',tc:'#1E40AF',label:'Menor'},
+              }[r.severity]||{bg:'#EFF6FF',bc:'#93C5FD',tc:'#1E40AF',label:'Menor'};
+              const lf={es:'🇪🇸',de:'🇩🇪',en:'🇬🇧',it:'🇮🇹',fr:'🇫🇷',nl:'🇳🇱',sv:'🇸🇪'}[r.lang]||'🌍';
+              return(
+                <div key={r.id} style={{border:`1px solid ${sc.bc}`,borderRadius:10,padding:'12px 14px',background:sc.bg,flexShrink:0}}>
+                  <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,flexWrap:'wrap'}}>
+                    <span style={{fontSize:14,letterSpacing:1,color:'#F59E0B'}}>{'★'.repeat(r.stars)}<span style={{color:'#E2E8F0'}}>{'★'.repeat(5-r.stars)}</span></span>
+                    <span style={{fontSize:11,color:sc.tc,fontWeight:600,border:`1px solid ${sc.bc}`,padding:'1px 8px',borderRadius:99,background:'rgba(255,255,255,0.5)'}}>{sc.label}</span>
+                    <span style={{fontSize:14}}>{lf}</span>
+                    <span style={{fontSize:10,color:C.tm,marginLeft:'auto'}}>#{r.id}</span>
+                  </div>
+                  <p style={{fontSize:13,color:C.tp,lineHeight:1.6,margin:'0 0 8px'}}>{r.text}</p>
+                  <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
+                    {r.tags.map(t=>{
+                      const isActive=t===selected;
+                      const lbl=issues.find(i=>i.tag===t)?.label||t.replace(/_/g,' ');
+                      return(
+                        <span key={t} style={{background:isActive?sc.bc:'rgba(0,0,0,0.07)',color:isActive?sc.tc:C.ts,fontSize:10,fontWeight:isActive?600:400,padding:'2px 8px',borderRadius:99}}>{lbl}</span>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// ── ACTION PLAN ───────────────────────────────────────────────────
+const planActions=[
+  {
+    priority:1,urgency:'Inmediata',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+    title:'Resolver la tensión precio / categoría',impact:'Muy alto',timeline:'1–2 meses',
+    problem:'RBP cobra €182/noche (todo incluido) siendo el 7º hotel más caro de 11 pero el único de 3★ en ese rango. Hoteles de 4★ todo incluido como Servatur Waikiki (€103) o Abora Buenaventura (€157) son significativamente más baratos con mejor categoría. Un cliente que compare en Booking no encuentra lógica de precio.',
+    items:[
+      {what:'Auditoría de valor percibido',how:'Identificar qué elementos justifican precio de 4★: acceso directo a la playa 100m, 3 piscinas, todo incluido completo. Estos argumentos deben estar en el frente de la ficha Booking, en las fotos principales y en todos los canales de distribución.',kpi:'Aumento de conversión Booking'},
+      {what:'Política de precios dinámica por temporada',how:'En temporada baja ajustar precio hacia 130–155€ para competir de frente con el segmento aspiracional. En Pride mayo y Winter Pride noviembre, subir hasta 220–250€ aprovechando demanda premium LGBTQ+. Configurar yield management básico en el channel manager.',kpi:'RevPAR mejorado +15%'},
+      {what:'Activar cancelación gratuita',how:'RBP es el único hotel del set sin cancelación gratuita en septiembre 7 noches. Esto penaliza visibilidad y conversión (el filtro de cancelación gratuita excluye al hotel). Activar tarifa reembolsable aunque sea con +10% sobre tarifa AI.',kpi:'Visibilidad filtros Booking +20%'},
+    ],
+  },
+  {
+    priority:2,urgency:'Inmediata',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+    title:'Construir visibilidad digital desde cero',impact:'Muy alto',timeline:'3–6 meses',
+    problem:'El hotel no aparece en ninguna de las 70 búsquedas monitorizadas en Google UK (mercado emisor #1 del turismo en Gran Canaria). En Alemania aparece solo en 2 posiciones, ambas en contexto de oferta barata / último minuto. Los resúmenes automáticos de IA de Google lo mencionan en 2 de 12 búsquedas. Bull Escorial aparece en 4, Gran Canaria Princess en 3. El hotel es invisible para su público objetivo.',
+    items:[
+      {what:'Web propia optimizada para UK y DE',how:'Crear o reforzar web con landing pages específicas en inglés y alemán: "Playa del Inglés hotel near beach", "3-star hotel all inclusive Gran Canaria". Arquitectura SEO técnica con schema markup de hotel, velocidad de carga <2s, Google My Business completamente optimizado.',kpi:'Top 10 orgánico Google UK en 6 meses'},
+      {what:'Campaña Google Ads UK y DE (arranque inmediato)',how:'Mientras el SEO madura (6–12 meses), activar Google Ads con budget €500–1.000/mes para capturar búsquedas de alta intención: "hotel playa PDI", "todo incluido Gran Canaria", "hoteles 3 estrellas Maspalomas". ROI esperado 3–5x en reservas directas.',kpi:'Tráfico web directo +40% en mes 1'},
+      {what:'Contenido para los resúmenes automáticos de Google',how:'Los resúmenes de IA recogen contenido de la web y reseñas. Publicar guías sobre playa El Veril, gestión activa de reseñas Google para subir score de 3.9 a 4.2+, y presencia en medios turísticos UK (TripAdvisor editorial, travel blogs especializados).',kpi:'Aparición en 5+ resúmenes IA en 12 meses'},
+    ],
+  },
+  {
+    priority:3,urgency:'Urgente',color:'#EA580C',bg:'#FFF7ED',border:'#FED7AA',
+    title:'Gestión de experiencia — problemas estructurales',impact:'Alto',timeline:'2–4 meses',
+    problem:'El 48% de las reseñas negativas mencionan el estado de las habitaciones (10 de 21 analizadas). El servicio de recepción tiene 3 incidentes críticos de 1★ con negligencia grave: robo no atendido, personal entrando sin avisar, empleada muy hostil. El mercado alemán —el más voluminoso— es el más crítico. Score Google 3.9 vs media de mercado 4.3: brecha directamente relacionada con pérdida de conversión.',
+    items:[
+      {what:'Plan de renovación de habitaciones por fases',how:'Los clientes detectan habitaciones antiguas, colchones en mal estado, azulejos rotos. Priorizar renovación del 20–30% del parque (más demandadas y más mencionadas en reseñas). No hace falta renovación completa: nueva ropa de cama, mobiliario básico de baño, pintura. Coste estimado 800–1.200€/habitación.',kpi:'Reducción -50% menciones habitación en negativas'},
+      {what:'Protocolo de gestión de incidentes en recepción',how:'Los 3 incidentes críticos son sistémicos, no puntuales. Implementar: formación en gestión de quejas, protocolo de escalado con gerencia, supervisión de turnos con peores valoraciones. Un incident manager como figura de referencia para el huésped.',kpi:'0 incidentes críticos en 6 meses'},
+      {what:'Programa activo de respuesta a reseñas',how:'Respuesta a toda reseña de ≤3★ en menos de 48h, en el idioma del cliente (español, alemán, inglés). Las respuestas en alemán son críticas: DE es el mercado más voluminoso y el más crítico. Cada respuesta debe incluir una acción concreta tomada, no solo disculpas.',kpi:'Score Google ≥4.2 en 12 meses'},
+    ],
+  },
+  {
+    priority:4,urgency:'Medio plazo',color:'#D97706',bg:'#FFFBEB',border:'#FDE68A',
+    title:'Certificación de sostenibilidad Booking.com',impact:'Medio',timeline:'2–3 meses',
+    problem:'El 58% de los hoteles del mercado en Booking.com tiene el badge Travel Sustainable. RBP no tiene ninguna certificación. Esto penaliza visibilidad en los filtros de búsqueda de Booking y en la percepción del viajero europeo, especialmente el alemán, que considera este criterio cada vez más determinante en su decisión de compra.',
+    items:[
+      {what:'Certificación Travel Sustainable de Booking.com',how:'Booking.com ofrece su propio programa Travel Sustainable basado en prácticas medioambientales documentadas. Se accede desde el extranet de Booking. Requiere documentar: separación de residuos, reducción de plásticos de un solo uso, ahorro energético (LED, sensores), formación del personal. Proceso de 2–3 meses con consultor de sostenibilidad hotelera.',kpi:'Badge Travel Sustainable activado'},
+      {what:'Optimizar todos los atributos de la ficha Booking',how:'Una vez certificado, auditar todos los atributos del listing: tipo de habitaciones, servicios incluidos, fotos (el hotel aparece con pocas fotos vs competidores con 80+). Activar el programa Preferred Partner si el performance de la propiedad lo permite (requiere score Booking ≥8.0 mantenido).',kpi:'+15% visibilidad en búsquedas Booking'},
+    ],
+  },
+  {
+    priority:5,urgency:'Inmediato — Pride en mayo',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+    title:'Capitalizar el segmento LGBTQ+ — oportunidad de alto valor',impact:'Alto',timeline:'1–3 meses',
+    problem:'Maspalomas es destino mundial de referencia LGBTQ+: Maspalomas Pride (4–10 mayo, 25º aniversario, +50.000 asistentes), Gran Desfile Pride (9 mayo) y Winter Pride (2–8 noviembre, +40.000 asistentes). El hotel está a 100m de la playa de El Veril, en la zona de ambiente. Este viajero tiene poder adquisitivo elevado y fidelidad alta. El hotel no tiene ninguna comunicación ni posicionamiento específico para este segmento.',
+    items:[
+      {what:'Paquetes específicos Pride mayo y Winter Pride noviembre',how:'Crear oferta Pride con precio premium (€220–250/n), comunicación inclusiva en web y Booking, fotos del entorno de ambiente y playa. Asociarse con organizadores del evento para presencia en la guía oficial de Pride. Budget de marketing de €2.000–3.000 por evento. Activar tarifas especiales en Booking para las semanas clave.',kpi:'Ocupación ≥90% en semanas Pride'},
+      {what:'Presencia en plataformas de viajes LGBTQ+',how:'Registrarse en misterb&b, gaycities.com y similares. Google Business completamente optimizado con fotos del entorno. Solicitar activamente reviews de huéspedes LGBTQ+. El argumento "acceso directo a playa El Veril, la playa gay más icónica de Europa" es único en el set competitivo.',kpi:'Nuevo canal de reservas directas'},
+    ],
+  },
+  {
+    priority:6,urgency:'Mes 1',color:'#059669',bg:'#F0FDF4',border:'#A7F3D0',
+    title:'Comunicar las ventajas diferenciales reales',impact:'Medio-alto',timeline:'1 mes',
+    problem:'RBP tiene dos ventajas objetivas que no comunica con eficacia: acceso directo a la playa (100m de playa El Veril, solo compartido con LIVVO Veril Playa en el set) y 3 piscinas incluyendo una climatizada en invierno. Sin embargo, en las búsquedas de Google "hotel cerca playa PDI" el hotel no aparece, y los competidores sin playa propia aparecen antes.',
+    items:[
+      {what:'"Playa propia" como eje central de comunicación',how:'No es solo "cerca de la playa", es "acceso directo a playa El Veril, la playa gay más famosa de Europa". Es el argumento diferencial que ningún otro hotel del set puede usar con la misma proximidad. Debe estar en el título de la ficha Booking, en las primeras 3 fotos, en Google Business y en todos los canales. Incluir distancia exacta: "2 minutos a pie de la playa".',kpi:'CTR ficha Booking +20%'},
+      {what:'Piscina climatizada como palanca de temporada baja',how:'De noviembre a marzo, la piscina climatizada es un argumento real de reserva que el hotel tiene y otros no. Comunicarlo en Booking con foto principal, en web y Google Business. La combinación Winter Pride noviembre + piscina climatizada es muy potente para ese segmento específico.',kpi:'Aumento ocupación nov–feb +15%'},
+    ],
+  },
+];
+
+function ActionPlan(){
+  const [open,setOpen]=useState(null);
+  const roadmap=[
+    {period:'Mes 1–2',label:'Urgente',color:'#DC2626',bg:'#FEF2F2',items:['Precio y cancelación gratuita','Comunicar playa y piscinas','Paquete Pride mayo']},
+    {period:'Mes 2–4',label:'Crítico',color:'#EA580C',bg:'#FFF7ED',items:['Protocolo recepción e incidentes','Inicio renovación habitaciones','Google Ads UK y DE activado']},
+    {period:'Mes 3–6',label:'Estructural',color:'#D97706',bg:'#FFFBEB',items:['SEO web inglés y alemán','Certificación Travel Sustainable','Respuesta activa a reseñas']},
+    {period:'Mes 6–12',label:'Consolidación',color:'#059669',bg:'#F0FDF4',items:['Posiciones orgánicas Google','Score Google ≥4.2','Winter Pride capitalizado']},
+  ];
+  return(
+    <div>
+      <SectionTitle sub="6 iniciativas prioritarias para mejorar el negocio · basadas en los datos de inteligencia recopilados">Plan de acción estratégico 2026</SectionTitle>
+      <Insight type="warning">
+        El hotel tiene <strong>fortalezas reales</strong> — 100m de playa El Veril con acceso directo, 3 piscinas, todo incluido, buena fidelización en Booking (8.5) — pero está atrapado en una contradicción estructural: cobra precios de 4★ con percepción digital de 3★ y sin visibilidad orgánica para justificarlo. La ausencia total en Google UK significa dependencia casi exclusiva de intermediarios. Las 6 iniciativas siguientes pueden ejecutarse en paralelo.
+      </Insight>
+
+      {/* Roadmap */}
+      <div style={{marginBottom:24}}>
+        <div style={{fontSize:11,fontWeight:700,color:C.ts,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:12}}>Hoja de ruta — 12 meses</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10}}>
+          {roadmap.map((p,i)=>(
+            <div key={i} style={{background:p.bg,border:`1px solid ${p.color}44`,borderRadius:10,padding:'12px 14px'}}>
+              <div style={{fontSize:9,fontWeight:700,color:p.color,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:2}}>{p.period}</div>
+              <div style={{fontSize:12,fontWeight:700,color:C.tp,marginBottom:8}}>{p.label}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                {p.items.map((it,j)=>(
+                  <div key={j} style={{display:'flex',alignItems:'flex-start',gap:6}}>
+                    <span style={{width:5,height:5,borderRadius:'50%',background:p.color,marginTop:5,flexShrink:0}}/>
+                    <span style={{fontSize:11,color:C.ts,lineHeight:1.4}}>{it}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Actions accordion */}
+      <div style={{fontSize:11,fontWeight:700,color:C.ts,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:12}}>Detalle de iniciativas — clic para expandir</div>
+      <div style={{display:'flex',flexDirection:'column',gap:10}}>
+        {planActions.map((a,i)=>{
+          const isOpen=open===i;
+          return(
+            <div key={i} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:'hidden'}}>
+              <div onClick={()=>setOpen(isOpen?null:i)}
+                style={{cursor:'pointer',padding:'14px 20px',display:'flex',alignItems:'center',gap:12,userSelect:'none'}}>
+                <div style={{width:32,height:32,borderRadius:'50%',background:a.color,color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:700,flexShrink:0}}>
+                  {a.priority}
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',marginBottom:3}}>
+                    <span style={{fontSize:13,fontWeight:700,color:C.tp}}>{a.title}</span>
+                    <span style={{fontSize:9,fontWeight:700,color:a.color,background:a.bg,border:`1px solid ${a.border}`,padding:'2px 8px',borderRadius:99,textTransform:'uppercase',letterSpacing:'0.05em',whiteSpace:'nowrap'}}>{a.urgency}</span>
+                  </div>
+                  <div style={{display:'flex',gap:14}}>
+                    <span style={{fontSize:11,color:C.ts}}>Impacto: <strong style={{color:C.tp}}>{a.impact}</strong></span>
+                    <span style={{fontSize:11,color:C.ts}}>Plazo: <strong style={{color:C.tp}}>{a.timeline}</strong></span>
+                  </div>
+                </div>
+                <span style={{fontSize:14,color:C.tm,flexShrink:0,transition:'transform 0.15s',display:'inline-block',transform:isOpen?'rotate(180deg)':'rotate(0deg)'}}>▾</span>
+              </div>
+              {isOpen&&(
+                <div style={{borderTop:`1px solid ${C.border}`}}>
+                  <div style={{padding:'14px 20px',background:'#F8FAFC',borderBottom:`1px solid ${C.border}`}}>
+                    <div style={{fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:6}}>Problema identificado</div>
+                    <p style={{margin:0,fontSize:13,color:C.ts,lineHeight:1.7}}>{a.problem}</p>
+                  </div>
+                  <div style={{padding:'16px 20px'}}>
+                    <div style={{fontSize:10,fontWeight:700,color:C.tm,textTransform:'uppercase',letterSpacing:'0.07em',marginBottom:12}}>Acciones concretas ({a.items.length})</div>
+                    <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                      {a.items.map((act,j)=>(
+                        <div key={j} style={{display:'flex',gap:12,padding:'12px 14px',background:a.bg,border:`1px solid ${a.border}`,borderRadius:9}}>
+                          <div style={{width:4,borderRadius:2,background:a.color,flexShrink:0}}/>
+                          <div style={{flex:1}}>
+                            <div style={{fontSize:13,fontWeight:700,color:C.tp,marginBottom:4}}>{act.what}</div>
+                            <p style={{margin:'0 0 8px',fontSize:12,color:C.ts,lineHeight:1.7}}>{act.how}</p>
+                            <div style={{display:'inline-flex',alignItems:'center',gap:5,background:'rgba(0,0,0,0.05)',padding:'2px 10px',borderRadius:99}}>
+                              <span style={{fontSize:10,color:C.tm}}>KPI:</span>
+                              <span style={{fontSize:11,fontWeight:700,color:C.tp}}>{act.kpi}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN ──────────────────────────────────────────────────────────
+const SECTIONS=[
+  {id:'plan',      label:'Plan de acción'},
+  {id:'overview',  label:'Resumen'},
+  {id:'prices',    label:'Precios'},
+  {id:'reputation',label:'Valoraciones'},
+  {id:'visibility',label:'Posicionamiento'},
+  {id:'events',    label:'Eventos'},
+  {id:'market',    label:'Mercado'},
+  {id:'property',  label:'Producto'},
+  {id:'voice',     label:'Opiniones'},
+];
+const MAP={overview:Overview,prices:Prices,reputation:Reputation,visibility:Visibility,events:Events,market:Market,property:Property,voice:Voice,plan:ActionPlan};
+
+function App(){
+  const [active,setActive]=useState('plan');
+  const Active=MAP[active]||Overview;
+  return(
+    <div style={{display:'flex',height:'100vh',fontFamily:'system-ui,-apple-system,sans-serif',background:C.bg,overflow:'hidden'}}>
+      <aside style={{width:200,background:C.navy,display:'flex',flexDirection:'column',flexShrink:0}}>
+        <div style={{padding:'16px 15px 12px',borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
+          <div style={{fontSize:9,color:'rgba(255,255,255,0.33)',fontWeight:500,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:5}}>Hospitality Intelligence</div>
+          <div style={{fontSize:13,color:'#fff',fontWeight:600,lineHeight:1.3}}>Relaxia Beverly Park</div>
+          <div style={{fontSize:10,color:'rgba(255,255,255,0.42)',marginTop:2}}>Playa del Inglés · Gran Canaria</div>
+        </div>
+        <div style={{padding:'10px 12px 12px',borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
+          <div style={{borderRadius:8,height:90,overflow:'hidden',position:'relative',marginBottom:10,background:'#163352'}}>
+            <img
+              src="https://contenthotels.amimir.com/hotels/es/canarias_r_37/san_bartolome_de_tirajana_c_935/h_17362/imatges/image-01.jpg"
+              alt="Relaxia Beverly Park"
+              style={{width:'100%',height:'100%',objectFit:'cover',opacity:0.6}}
+              onError={e=>{e.target.style.display='none';}}
+            />
+            <div style={{position:'absolute',bottom:7,left:7,display:'flex',gap:3,flexWrap:'wrap'}}>
+              <span style={{background:C.teal,color:'#fff',fontSize:8,fontWeight:700,padding:'2px 5px',borderRadius:3}}>Todo incl.</span>
+              <span style={{background:'rgba(0,0,0,0.45)',color:'#fff',fontSize:8,padding:'2px 5px',borderRadius:3}}>469 hab.</span>
+            </div>
+          </div>
+          <div style={{display:'flex',justifyContent:'space-around'}}>
+            {[{v:'3.9',l:'Google'},{v:'8.5',l:'Booking'},{v:'€182',l:'sep./n'}].map(x=>(
+              <div key={x.l} style={{textAlign:'center'}}>
+                <div style={{fontSize:15,fontWeight:700,color:'#fff'}}>{x.v}</div>
+                <div style={{fontSize:9,color:'rgba(255,255,255,0.4)'}}>{x.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <nav style={{padding:'7px 8px',flex:1,overflowY:'auto'}}>
+          {SECTIONS.map(s=>{
+            const isA=s.id===active;
+            return(
+              <button key={s.id} onClick={()=>setActive(s.id)}
+                style={{width:'100%',display:'flex',alignItems:'center',gap:9,padding:'9px 12px',borderRadius:8,border:'none',background:isA?'rgba(0,155,184,0.18)':'transparent',color:isA?'#4DD9F0':'rgba(255,255,255,0.5)',fontSize:13,fontWeight:isA?600:400,cursor:'pointer',marginBottom:2,textAlign:'left'}}>
+                {s.label}
+                {isA&&<span style={{marginLeft:'auto',width:4,height:4,borderRadius:'50%',background:'#4DD9F0',display:'inline-block',flexShrink:0}}/>}
+              </button>
+            );
+          })}
+        </nav>
+        <div style={{padding:'10px 14px',borderTop:'1px solid rgba(255,255,255,0.07)'}}>
+          <div style={{fontSize:9,color:'rgba(255,255,255,0.22)',lineHeight:1.7}}>Actualizado 28 mar. 2026 · 05:57h</div>
+        </div>
+      </aside>
+      <main style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+        <div style={{background:C.card,borderBottom:`1px solid ${C.border}`,padding:'0 24px',height:50,display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
+          <div style={{display:'flex',alignItems:'center',gap:10}}>
+            <h1 style={{fontSize:15,fontWeight:600,color:C.tp,margin:0}}>{SECTIONS.find(s=>s.id===active)?.label}</h1>
+            <span style={{fontSize:11,color:C.tm}}>· Relaxia Beverly Park</span>
+          </div>
+          <div style={{display:'flex',gap:6}}>
+            {[{c:'#EFF6FF',t:'#1E40AF',l:'Google UK + DE'},{c:'#F0FDF4',t:'#065F46',l:'Booking.com'},{c:'#FEF9C3',t:'#78350F',l:'Airbnb Maspalomas'}].map(x=>(
+              <Badge key={x.l} color={x.c} text={x.t}>{x.l}</Badge>
+            ))}
+          </div>
+        </div>
+        <div style={{flex:1,overflowY:'auto',padding:24}}>
+          <Active/>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+  </script>
+</body>
+</html>
