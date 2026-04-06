@@ -3,34 +3,55 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hospitality Intelligence · Relaxia Beverly Park</title>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js" crossorigin></script>
+  <title>Hospitality Intelligence · Relaxia Hotels</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js" crossorigin></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #EEF2F7; }
-    button { font-family: inherit; }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #FAFAFA; color: #111827; -webkit-font-smoothing: antialiased; }
+    button { font-family: inherit; cursor: pointer; }
+    a { text-decoration: none; }
+
+    /* NAV */
+    .top-nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.97); backdrop-filter: blur(10px); border-bottom: 1px solid #E5E7EB; box-shadow: 0 1px 0 #F3F4F6; }
+    .nav-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; height: 58px; padding: 0 32px; gap: 0; }
+    .nav-brand { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 19px; font-weight: 700; color: #111827; margin-right: 48px; flex-shrink: 0; }
+    .nav-brand span { color: #1D9E75; }
+    .nav-links { display: flex; flex: 1; gap: 4px; }
+    .nav-link { padding: 0 18px; height: 58px; display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #6B7280; white-space: nowrap; border-bottom: 2.5px solid transparent; transition: color 0.15s, border-color 0.15s; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
+    .nav-link:hover { color: #111827; }
+    .nav-link.active { color: #1D9E75; font-weight: 700; border-bottom: 2.5px solid #1D9E75; }
+    .nav-date { font-size: 11px; color: #9CA3AF; flex-shrink: 0; margin-left: 24px; }
+
+    /* SECTIONS */
+    section { scroll-margin-top: 58px; }
+    .sec-wrap { max-width: 1180px; margin: 0 auto; padding: 52px 32px; }
+    .sec-alt { background: #F9FAFB; }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #F3F4F6; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: #1D9E75; }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
-const { useState, useMemo } = React;
+const { useState, useMemo, useEffect, useRef } = React;
 
 
 
 const C = {
-  navy:'#0D2137', teal:'#007A94', tealL:'#009BB8',
-  amber:'#D97706', red:'#DC2626', green:'#059669',
-  bg:'#EEF2F7', card:'#FFFFFF', border:'#D1D9E6',
-  tp:'#0D2137', ts:'#4A6080', tm:'#8BA0B4',
+  navy:'#111827', teal:'#1D9E75', tealL:'#25c490',
+  amber:'#D97706', red:'#DC2626', green:'#1D9E75',
+  bg:'#FAFAFA', card:'#FFFFFF', border:'#E5E7EB',
+  tp:'#111827', ts:'#4B5563', tm:'#9CA3AF',
 };
-const lvlColor={target:'#007A94',direct:'#0891B2',aspiracional:'#6D28D9',benchmark:'#374151'};
+const lvlColor={target:'#1D9E75',direct:'#0891B2',aspiracional:'#6D28D9',benchmark:'#374151'};
 
 const allPrices=[
   {code:'WKK',name:'Servatur Waikiki',         lvl:'aspiracional',stars:4,date:'2026-05-08',nights:7,price:228.92,rack:null,discount:null,regime:'AI',scarcity:null,freeCancellation:true},
@@ -81,6 +102,8 @@ const props=[
   {code:'SSB',name:'Seaside Sandy Beach',       stars:4,lvl:'benchmark',   g:4.6,gr:1808,b:null,br:null},
   {code:'RPP',name:'Hotel Riu Papayas',         stars:4,lvl:'benchmark',   g:4.5,gr:4323,b:8.6,br:955},
   {code:'RPM',name:'Riu Palace Maspalomas',     stars:5,lvl:'benchmark',   g:4.6,gr:4299,b:9.0,br:1551},
+  {code:'RBS',name:'Relaxia Beverly Suites',   stars:4,lvl:'target',      g:4.9,gr:51,  b:9.4,br:25},
+  {code:'RLG',name:'Relaxia Los Girasoles',    stars:3,lvl:'target',      g:4.7,gr:641, b:9.3,br:69},
 ];
 
 const issues=[
@@ -168,8 +191,8 @@ const featureRows=[
 const featCodes=['RBP','VRL','GRF','ABV','ABC','WKK','GCP','BES','SSB','RPM'];
 
 // ── SMALL COMPONENTS ─────────────────────────────────────────────
-const Badge=({children,color='#EEF2F7',text='#4A6080',size=11})=>(
-  <span style={{background:color,color:text,fontSize:size,fontWeight:500,padding:'2px 8px',borderRadius:99,whiteSpace:'nowrap'}}>{children}</span>
+const Badge=({children,color='#F3F4F6',text='#4B5563',size=10})=>(
+  <span style={{background:color,color:text,fontSize:size,fontWeight:600,padding:'3px 9px',borderRadius:6,whiteSpace:'nowrap',letterSpacing:'0.01em'}}>{children}</span>
 );
 const Dot=({impact})=>{
   const m={very_high:'#DC2626',high:'#D97706',medium:'#2563EB',low:'#6B7280'};
@@ -182,25 +205,25 @@ const Td=({children,right,bold,dim,highlight,wrap})=>(
   <td style={{padding:'8px 10px',textAlign:right?'right':'left',fontSize:13,color:highlight?C.teal:dim?C.tm:C.tp,fontWeight:bold||highlight?600:400,borderBottom:'1px solid #F1F5F9',whiteSpace:wrap?'normal':'nowrap'}}>{children}</td>
 );
 const Metric=({label,value,sub,color,small})=>(
-  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:'16px 20px',display:'flex',flexDirection:'column',gap:4}}>
-    <span style={{fontSize:11,color:C.ts,fontWeight:500,textTransform:'uppercase',letterSpacing:'0.05em'}}>{label}</span>
-    <span style={{fontSize:small?22:28,fontWeight:600,color:color||C.tp,lineHeight:1}}>{value}</span>
-    {sub&&<span style={{fontSize:12,color:C.ts,lineHeight:1.4}}>{sub}</span>}
+  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:'20px 24px',display:'flex',flexDirection:'column',gap:6,boxShadow:'0 1px 3px rgba(0,0,0,0.05)',borderTop:`3px solid ${color||C.teal}`}}>
+    <span style={{fontSize:10,color:C.tm,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.1em'}}>{label}</span>
+    <span style={{fontSize:small?24:34,fontWeight:700,color:color||C.tp,lineHeight:1,fontFamily:"'Playfair Display',Georgia,serif"}}>{value}</span>
+    {sub&&<span style={{fontSize:12,color:C.ts,lineHeight:1.4,marginTop:2}}>{sub}</span>}
   </div>
 );
 const SectionTitle=({children,sub})=>(
-  <div style={{marginBottom:20}}>
-    <h2 style={{fontSize:20,fontWeight:600,color:C.tp,margin:0}}>{children}</h2>
-    {sub&&<p style={{fontSize:13,color:C.ts,margin:'4px 0 0'}}>{sub}</p>}
+  <div style={{marginBottom:28}}>
+    <h2 style={{fontSize:26,fontWeight:700,color:C.tp,margin:0,fontFamily:"'Playfair Display',Georgia,serif",letterSpacing:'-0.02em'}}>{children}</h2>
+    {sub&&<p style={{fontSize:14,color:C.ts,margin:'8px 0 0',lineHeight:1.6}}>{sub}</p>}
   </div>
 );
 const Card=({children,title,sub,style={}})=>(
-  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:'hidden',...style}}>
-    {title&&<div style={{padding:'14px 20px',borderBottom:`1px solid ${C.border}`}}>
-      <div style={{fontWeight:600,fontSize:14,color:C.tp}}>{title}</div>
-      {sub&&<div style={{fontSize:12,color:C.ts,marginTop:2}}>{sub}</div>}
+  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,overflow:'hidden',boxShadow:'0 1px 3px rgba(0,0,0,0.05)',...style}}>
+    {title&&<div style={{padding:'16px 24px',borderBottom:`1px solid ${C.border}`}}>
+      <div style={{fontWeight:700,fontSize:14,color:C.tp}}>{title}</div>
+      {sub&&<div style={{fontSize:12,color:C.ts,marginTop:3,lineHeight:1.5}}>{sub}</div>}
     </div>}
-    <div style={{padding:20}}>{children}</div>
+    <div style={{padding:24}}>{children}</div>
   </div>
 );
 const Insight=({children,type='info'})=>{
@@ -328,6 +351,14 @@ function Overview(){
 }
 
 // ── PRICES ────────────────────────────────────────────────────────
+const googleHotels=[
+  {code:'RBP',name:'Relaxia Beverly Park',   date:'2026-04-05',price:112,pbt:105,ok:true},
+  {code:'RBS',name:'Relaxia Beverly Suites', date:'2026-04-05',price:null,ok:false,note:'Sin precio visible. Revisar conectividad con Google Free Booking Links.'},
+  {code:'RLG',name:'Relaxia Los Girasoles',  date:'2026-04-05',price:null,ok:false,note:'No disponible para estas fechas.'},
+  {code:'RBP',name:'Relaxia Beverly Park',   date:'2026-06-01',price:96, pbt:90, ok:true},
+  {code:'RBS',name:'Relaxia Beverly Suites', date:'2026-06-01',price:null,ok:false,note:'Sin precio visible. Revisar conectividad con Google Free Booking Links.'},
+  {code:'RLG',name:'Relaxia Los Girasoles',  date:'2026-06-01',price:103,pbt:96, ok:true},
+];
 const ineRef={
   '2026-05-22-7':{month:'mayo 2026',   ineAdr:115.34,ineRevpar:86.33, ineOcc:76.13,gapPct:34.3,rbpRevpar:117.91},
   '2026-09-04-7':{month:'sep. 2026',   ineAdr:130.64,ineRevpar:114.55,ineOcc:86.80,gapPct:39.4,rbpRevpar:158.07},
@@ -361,11 +392,16 @@ function Prices(){
   const [hovDot,setHovDot]=useState(null);
 
   const dateOpts=[
-    {key:'2026-05-22-7',label:'22 mayo · 7 noches',  noRbp:false},
-    {key:'2026-05-29-2',label:'29 mayo · 2 noches',  noRbp:true},
-    {key:'2026-09-04-2',label:'4 sep · 2 noches',    noRbp:true},
-    {key:'2026-09-04-7',label:'4 sep · 7 noches',    noRbp:false},
+    {key:'g-2026-04-05',label:'5 abr · Google Hotels',noRbp:false,google:true},
+    {key:'g-2026-06-01',label:'1 jun · Google Hotels', noRbp:false,google:true},
+    {key:'2026-05-22-7',label:'22 may · Booking',noRbp:false},
+    {key:'2026-05-29-2',label:'29 may · Booking',noRbp:true},
+    {key:'2026-09-04-2',label:'4 sep · 2n · Booking', noRbp:true},
+    {key:'2026-09-04-7',label:'4 sep · 7n · Booking', noRbp:false},
   ];
+  const isGoogle=dateOpts.find(o=>o.key===sel)?.google;
+  const gDate=isGoogle?sel.replace('g-',''):null;
+  const gSnaps=isGoogle?googleHotels.filter(g=>g.date===gDate):[];
 
   const parts=sel.split('-');
   const selNights=parseInt(parts[parts.length-1]);
@@ -547,8 +583,33 @@ function Prices(){
         <p style={{margin:0,fontSize:13,color:C.ts,lineHeight:1.65}}>{situationText[sel]}</p>
       </div>
 
-      {/* ── BLOQUE 1: Diagnóstico + dot chart ── */}
-      <Card style={{marginBottom:14}}>
+      {isGoogle&&(
+        <div style={{marginBottom:24}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,marginBottom:16}}>
+            {gSnaps.map(g=>{
+              const col=g.code==='RBP'?C.teal:g.code==='RBS'?'#6D28D9':'#D97706';
+              const nm={RBP:'Beverly Park',RBS:'Beverly Suites',RLG:'Los Girasoles'};
+              return(
+                <div key={g.code} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:24,borderTop:`3px solid ${g.ok?col:'#DC2626'}`,boxShadow:'0 1px 4px rgba(0,0,0,0.06)'}}>
+                  <div style={{fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.08em',color:C.tm,marginBottom:8}}>{nm[g.code]}</div>
+                  {g.ok?(<>
+                    <div style={{fontSize:40,fontWeight:700,color:col,lineHeight:1,fontFamily:"'Playfair Display',Georgia,serif"}}>{g.price}<span style={{fontSize:18,fontWeight:500}}>€</span></div>
+                    <div style={{fontSize:12,color:C.ts,marginTop:6}}>por noche · {g.pbt}€ sin impuestos</div>
+                  </>):(<>
+                    <div style={{fontSize:15,fontWeight:700,color:'#DC2626',marginBottom:6}}>Sin precio visible</div>
+                    <div style={{fontSize:12,color:C.ts,lineHeight:1.6}}>{g.note}</div>
+                  </>)}
+                </div>
+              );
+            })}
+          </div>
+          {gDate==='2026-04-05'
+            ?<div style={{background:'#FEF2F2',border:'1px solid #FECACA',borderRadius:10,padding:'12px 16px',fontSize:13,color:'#991B1B',lineHeight:1.7}}><strong>Alerta:</strong> Beverly Suites (4.9★ Google · 9.4 Booking) no aparece con precio en Google Hotels. 8 suites premium sin visibilidad en el canal de mayor intención de compra.</div>
+            :<div style={{background:'#FFFBEB',border:'1px solid #FDE68A',borderRadius:10,padding:'12px 16px',fontSize:13,color:'#92400E',lineHeight:1.7}}><strong>Evolución:</strong> Beverly Park bajó de 112€ (Abril) a 96€ (Junio) — caída del 14.3%. Los Girasoles solo aparece en Junio (103€). Beverly Suites invisible en ambos snapshots.</div>
+          }
+        </div>
+      )}
+      {!isGoogle&&<><Card style={{marginBottom:14}}>
         <div style={{padding:'18px 22px 0',display:'flex',alignItems:'center',gap:6}}>
           <span style={{fontSize:12,fontWeight:700,color:C.ts,textTransform:'uppercase',letterSpacing:'0.06em'}}>¿Cobras lo que deberías?</span>
           <TipIcon id="b1" text="Compara el precio por noche de Relaxia con la tarifa media diaria de los hoteles de Las Palmas según el INE (Encuesta de Ocupación Hotelera)."/>
@@ -697,7 +758,7 @@ function Prices(){
           <span style={{fontSize:10,color:C.tm}}>Más caro que Relaxia</span>
           <span style={{fontSize:10,color:C.tm,marginLeft:8}}>· AI = todo incluido · B&B = solo alojamiento</span>
         </div>
-      </Card>
+      </Card></> }
     </div>
   );
 }
@@ -1613,90 +1674,142 @@ function ActionPlan(){
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────
-const SECTIONS=[
-  {id:'plan',      label:'Plan de acción'},
+const NAV_SECTIONS=[
   {id:'overview',  label:'Resumen'},
   {id:'prices',    label:'Precios'},
-  {id:'reputation',label:'Valoraciones'},
+  {id:'reputation',label:'Reputación'},
   {id:'visibility',label:'Posicionamiento'},
-  {id:'events',    label:'Eventos'},
   {id:'market',    label:'Mercado'},
-  {id:'property',  label:'Producto'},
-  {id:'voice',     label:'Opiniones'},
+  {id:'plan',      label:'Plan de acción'},
 ];
-const MAP={overview:Overview,prices:Prices,reputation:Reputation,visibility:Visibility,events:Events,market:Market,property:Property,voice:Voice,plan:ActionPlan};
 
-function App(){
-  const [active,setActive]=useState('plan');
-  const Active=MAP[active]||Overview;
+function Cover(){
+  const hotels=[
+    {code:'RBP',name:'Beverly Park',   stars:'3★',tag:'Todo Incluido · 469 hab.',g:3.9,b:8.5,col:'#1D9E75'},
+    {code:'RBS',name:'Beverly Suites', stars:'4★',tag:'Adults Only · 8 suites', g:4.9,b:9.4,col:'#6D28D9'},
+    {code:'RLG',name:'Los Girasoles',  stars:'3★',tag:'Con Spa · 61 bungalows',  g:4.7,b:9.3,col:'#D97706'},
+  ];
   return(
-    <div style={{display:'flex',height:'100vh',fontFamily:'system-ui,-apple-system,sans-serif',background:C.bg,overflow:'hidden'}}>
-      <aside style={{width:200,background:C.navy,display:'flex',flexDirection:'column',flexShrink:0}}>
-        <div style={{padding:'16px 15px 12px',borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
-          <div style={{fontSize:9,color:'rgba(255,255,255,0.33)',fontWeight:500,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:5}}>Hospitality Intelligence</div>
-          <div style={{fontSize:13,color:'#fff',fontWeight:600,lineHeight:1.3}}>Relaxia Beverly Park</div>
-          <div style={{fontSize:10,color:'rgba(255,255,255,0.42)',marginTop:2}}>Playa del Inglés · Gran Canaria</div>
-        </div>
-        <div style={{padding:'10px 12px 12px',borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
-          <div style={{borderRadius:8,height:90,overflow:'hidden',position:'relative',marginBottom:10,background:'#163352'}}>
-            <img
-              src="https://contenthotels.amimir.com/hotels/es/canarias_r_37/san_bartolome_de_tirajana_c_935/h_17362/imatges/image-01.jpg"
-              alt="Relaxia Beverly Park"
-              style={{width:'100%',height:'100%',objectFit:'cover',opacity:0.6}}
-              onError={e=>{e.target.style.display='none';}}
-            />
-            <div style={{position:'absolute',bottom:7,left:7,display:'flex',gap:3,flexWrap:'wrap'}}>
-              <span style={{background:C.teal,color:'#fff',fontSize:8,fontWeight:700,padding:'2px 5px',borderRadius:3}}>Todo incl.</span>
-              <span style={{background:'rgba(0,0,0,0.45)',color:'#fff',fontSize:8,padding:'2px 5px',borderRadius:3}}>469 hab.</span>
+    <div style={{background:'linear-gradient(160deg,#FAFFFE 0%,#F0FAF5 60%,#EFF6FF 100%)',padding:'72px 32px 64px',borderBottom:'1px solid #E5E7EB'}}>
+      <div style={{maxWidth:1180,margin:'0 auto'}}>
+        <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:40,flexWrap:'wrap'}}>
+          <div style={{flex:'1 1 400px'}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:20}}>
+              <div style={{width:8,height:8,borderRadius:'50%',background:'#1D9E75'}}/>
+              <span style={{fontSize:11,fontWeight:700,letterSpacing:'0.14em',color:'#1D9E75',textTransform:'uppercase'}}>Hospitality Intelligence</span>
+            </div>
+            <h1 style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:56,fontWeight:700,color:'#111827',lineHeight:1.05,letterSpacing:'-0.03em',marginBottom:14}}>
+              Relaxia <em style={{fontStyle:'italic',color:'#1D9E75'}}>Hotels</em>
+            </h1>
+            <p style={{fontSize:17,color:'#6B7280',marginBottom:10,fontWeight:400}}>Gran Canaria · Playa del Inglés · 3 propiedades</p>
+            <p style={{fontSize:13,color:'#9CA3AF',marginBottom:48}}>Inteligencia de mercado · Actualizado 5 abr. 2026</p>
+            <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+              {hotels.map(h=>(
+                <div key={h.code} style={{background:'rgba(255,255,255,0.9)',backdropFilter:'blur(8px)',border:`1px solid ${h.col}30`,borderTop:`3px solid ${h.col}`,borderRadius:14,padding:'18px 22px',minWidth:190,boxShadow:'0 2px 8px rgba(0,0,0,0.07)'}}>
+                  <div style={{fontSize:12,fontWeight:700,color:'#111827',marginBottom:4}}>{h.name}</div>
+                  <div style={{fontSize:10,color:'#9CA3AF',marginBottom:14}}>{h.stars} · {h.tag}</div>
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+                    <div><div style={{fontSize:24,fontWeight:700,color:h.col,fontFamily:"'Playfair Display',Georgia,serif",lineHeight:1}}>{h.g}</div><div style={{fontSize:10,color:'#9CA3AF',marginTop:3}}>Google</div></div>
+                    <div><div style={{fontSize:24,fontWeight:700,color:h.col,fontFamily:"'Playfair Display',Georgia,serif",lineHeight:1}}>{h.b}</div><div style={{fontSize:10,color:'#9CA3AF',marginTop:3}}>Booking</div></div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-          <div style={{display:'flex',justifyContent:'space-around'}}>
-            {[{v:'3.9',l:'Google'},{v:'8.5',l:'Booking'},{v:'€182',l:'sep./n'}].map(x=>(
-              <div key={x.l} style={{textAlign:'center'}}>
-                <div style={{fontSize:15,fontWeight:700,color:'#fff'}}>{x.v}</div>
-                <div style={{fontSize:9,color:'rgba(255,255,255,0.4)'}}>{x.l}</div>
-              </div>
+          <div style={{flex:'0 0 auto',display:'flex',flexDirection:'column',gap:10,alignItems:'flex-end',justifyContent:'flex-start',paddingTop:8}}>
+            {[
+              {label:'Google Hotels',color:'#E8F7F1',tc:'#065F46'},
+              {label:'Booking.com',  color:'#EFF6FF',tc:'#1E40AF'},
+              {label:'Airbnb Maspalomas',color:'#FEF9C3',tc:'#78350F'},
+              {label:'Google UK + DE', color:'#F3E8FF',tc:'#6D28D9'},
+              {label:'INE · Encuesta Hotelera',color:'#F9FAFB',tc:'#374151'},
+            ].map(s=>(
+              <div key={s.label} style={{background:s.color,color:s.tc,fontSize:11,fontWeight:600,padding:'5px 12px',borderRadius:20,whiteSpace:'nowrap'}}>{s.label}</div>
             ))}
           </div>
         </div>
-        <nav style={{padding:'7px 8px',flex:1,overflowY:'auto'}}>
-          {SECTIONS.map(s=>{
-            const isA=s.id===active;
-            return(
-              <button key={s.id} onClick={()=>setActive(s.id)}
-                style={{width:'100%',display:'flex',alignItems:'center',gap:9,padding:'9px 12px',borderRadius:8,border:'none',background:isA?'rgba(0,155,184,0.18)':'transparent',color:isA?'#4DD9F0':'rgba(255,255,255,0.5)',fontSize:13,fontWeight:isA?600:400,cursor:'pointer',marginBottom:2,textAlign:'left'}}>
-                {s.label}
-                {isA&&<span style={{marginLeft:'auto',width:4,height:4,borderRadius:'50%',background:'#4DD9F0',display:'inline-block',flexShrink:0}}/>}
-              </button>
-            );
-          })}
-        </nav>
-        <div style={{padding:'10px 14px',borderTop:'1px solid rgba(255,255,255,0.07)'}}>
-          <div style={{fontSize:9,color:'rgba(255,255,255,0.22)',lineHeight:1.7}}>Actualizado 28 mar. 2026 · 05:57h</div>
+        <div style={{marginTop:48,display:'flex',gap:24,flexWrap:'wrap',paddingTop:32,borderTop:'1px solid #E5E7EB'}}>
+          {[
+            {label:'Hoteles monitorizados',value:'12',sub:'set competitivo completo'},
+            {label:'Fuentes de datos',value:'6',sub:'Google · Booking · INE · Airbnb · SERP · Eventos'},
+            {label:'Valoración media mercado',value:'4.3',sub:'Google Maps · media de 12 hoteles'},
+            {label:'Visibilidad orgánica RBP',value:'2/170',sub:'búsquedas en UK + DE'},
+          ].map(s=>(
+            <div key={s.label} style={{flex:'1 1 180px'}}>
+              <div style={{fontSize:10,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.09em',color:'#9CA3AF',marginBottom:4}}>{s.label}</div>
+              <div style={{fontSize:28,fontWeight:700,color:'#111827',fontFamily:"'Playfair Display',Georgia,serif",lineHeight:1}}>{s.value}</div>
+              <div style={{fontSize:12,color:'#6B7280',marginTop:4}}>{s.sub}</div>
+            </div>
+          ))}
         </div>
-      </aside>
-      <main style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
-        <div style={{background:C.card,borderBottom:`1px solid ${C.border}`,padding:'0 24px',height:50,display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
-          <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <h1 style={{fontSize:15,fontWeight:600,color:C.tp,margin:0}}>{SECTIONS.find(s=>s.id===active)?.label}</h1>
-            <span style={{fontSize:11,color:C.tm}}>· Relaxia Beverly Park</span>
-          </div>
-          <div style={{display:'flex',gap:6}}>
-            {[{c:'#EFF6FF',t:'#1E40AF',l:'Google UK + DE'},{c:'#F0FDF4',t:'#065F46',l:'Booking.com'},{c:'#FEF9C3',t:'#78350F',l:'Airbnb Maspalomas'}].map(x=>(
-              <Badge key={x.l} color={x.c} text={x.t}>{x.l}</Badge>
-            ))}
-          </div>
-        </div>
-        <div style={{flex:1,overflowY:'auto',padding:24}}>
-          <Active/>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }
 
+function TopNav({active}){
+  const go=(id)=>{
+    if(id==='cover'){window.scrollTo({top:0,behavior:'smooth'});return;}
+    const el=document.getElementById(id);
+    if(el){
+      const y=el.getBoundingClientRect().top+window.pageYOffset-62;
+      window.scrollTo({top:y,behavior:'smooth'});
+    }
+  };
+  return(
+    <nav className="top-nav">
+      <div className="nav-inner">
+        <button onClick={()=>go('cover')} className="nav-brand" style={{background:'none',border:'none',cursor:'pointer',padding:0}}>Relaxia <span>Hotels</span></button>
+        <div className="nav-links">
+          {NAV_SECTIONS.map(s=>(
+            <button key={s.id} onClick={()=>go(s.id)} className={`nav-link${active===s.id?' active':''}`} style={{background:'none',border:'none',cursor:'pointer'}}>{s.label}</button>
+          ))}
+        </div>
+        <div className="nav-date">Gran Canaria · abr. 2026</div>
+      </div>
+    </nav>
+  );
+}
+
+function SectionWrap({id,children,alt=false}){
+  return(
+    <section id={id} className={alt?'sec-alt':''}>
+      <div className="sec-wrap">{children}</div>
+    </section>
+  );
+}
+
+function App(){
+  const [active,setActive]=useState('cover');
+
+  useEffect(()=>{
+    const ALL_IDS=['cover','overview','prices','reputation','visibility','events','market','property','voice','plan'];
+    const obs=new IntersectionObserver(
+      entries=>entries.forEach(e=>{ if(e.isIntersecting) setActive(e.target.id); }),
+      {rootMargin:'-58px 0px -50% 0px',threshold:0}
+    );
+    ALL_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) obs.observe(el); });
+    return()=>obs.disconnect();
+  },[]);
+
+  return(
+    <div style={{fontFamily:"'Plus Jakarta Sans',system-ui,sans-serif",background:C.bg}}>
+      <TopNav active={active}/>
+      <section id="cover"><Cover/></section>
+      <SectionWrap id="overview"><Overview/></SectionWrap>
+      <SectionWrap id="prices" alt><Prices/></SectionWrap>
+      <SectionWrap id="reputation"><Reputation/></SectionWrap>
+      <SectionWrap id="visibility" alt><Visibility/></SectionWrap>
+      <SectionWrap id="events"><Events/></SectionWrap>
+      <SectionWrap id="market" alt><Market/></SectionWrap>
+      <SectionWrap id="property"><Property/></SectionWrap>
+      <SectionWrap id="voice" alt><Voice/></SectionWrap>
+      <SectionWrap id="plan"><ActionPlan/></SectionWrap>
+      <footer style={{textAlign:'center',padding:'32px',fontSize:12,color:'#9CA3AF',borderTop:'1px solid #E5E7EB',background:'#F9FAFB'}}>
+        Hospitality Intelligence · Relaxia Hotels · Gran Canaria · 2026 · Astara Intelligence
+      </footer>
+    </div>
+  );
+}
 
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
-  </script>
-</body>
-</html>
