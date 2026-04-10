@@ -1673,6 +1673,188 @@ function ActionPlan(){
   );
 }
 
+// ── AGADIR vs MASPALOMAS ─────────────────────────────────────────
+function AgadirComparison(){
+
+  /* ── Datos embebidos (Supabase hi_google_hotels, abr 2026) ────── */
+  const agadir3 = {avg:58,min:18,max:187,median:45,count:78,withPrice:47,rating:3.8,reviews:412};
+  const agadir4 = {avg:124,min:30,max:306,median:105,count:87,withPrice:44,rating:4.0,reviews:680};
+  const gc3    = {avg:105,min:44,max:250,median:97,count:42,withPrice:38,rating:4.1,reviews:1850};
+  const gc4    = {avg:153,min:62,max:370,median:142,count:35,withPrice:30,rating:4.4,reviews:2420};
+
+  const zones = [
+    {name:'Agadir Bay / Playa',hotels:52,avg3:62,avg4:130,topHotel:'Sofitel Agadir Royal Bay',topRating:4.5},
+    {name:'Taghazout (surf & boutique)',hotels:38,avg3:48,avg4:115,topHotel:'Hyatt Place Taghazout',topRating:4.4},
+    {name:'Agadir Centro',hotels:31,avg3:42,avg4:98,topHotel:'Kenzi Europa',topRating:4.2},
+    {name:'Aourir / Banana Village',hotels:24,avg3:55,avg4:110,topHotel:'Riad Villa Blanche',topRating:4.3},
+    {name:'Otras zonas',hotels:20,avg3:65,avg4:135,topHotel:'Atlantic Palace',topRating:4.1},
+  ];
+
+  const seasonality = [
+    {period:'Junio 2026',agadir3:52,agadir4:108,gc3:115,gc4:168,label:'Temporada alta'},
+    {period:'Diciembre 2026',agadir3:64,agadir4:140,gc3:95,gc4:138,label:'Invierno / Navidad'},
+  ];
+
+  const pct=(a,b)=>Math.round((1-a/b)*100);
+  const diff3=pct(agadir3.avg,gc3.avg);
+  const diff4=pct(agadir4.avg,gc4.avg);
+
+  /* ── Bar component ──────────────────────────────────────────────── */
+  const Bar=({value,max,color,label})=>{
+    const w=Math.min(100,Math.round(value/max*100));
+    return(
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
+        <span style={{fontSize:12,color:C.ts,width:85,textAlign:'right',flexShrink:0}}>{label}</span>
+        <div style={{flex:1,background:'#F1F5F9',borderRadius:6,height:22,overflow:'hidden'}}>
+          <div style={{width:`${w}%`,height:'100%',background:color,borderRadius:6,transition:'width 0.4s'}}/>
+        </div>
+        <span style={{fontSize:13,fontWeight:700,color:C.tp,width:55,textAlign:'right'}}>€{value}</span>
+      </div>
+    );
+  };
+
+  return(
+    <div>
+      <SectionTitle sub="Análisis competitivo internacional · Datos Google Hotels vía SerpAPI (Supabase hi_google_hotels)">
+        Agadir vs Maspalomas
+      </SectionTitle>
+
+      <Insight type="warning">Agadir (Marruecos) ofrece precios un <strong>{diff3}% más baratos en 3★</strong> y un <strong>{diff4}% en 4★</strong> frente a Gran Canaria. Aunque la planta hotelera es más nueva, las valoraciones medias son inferiores y el volumen de reseñas es significativamente menor.</Insight>
+
+      {/* ── KPIs ────────────────────────────────────────────────── */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:16,marginBottom:32}}>
+        <Metric label="Precio medio 3★ Agadir" value={`€${agadir3.avg}`} sub={`vs €${gc3.avg} en GC (−${diff3}%)`} color="#D97706"/>
+        <Metric label="Precio medio 4★ Agadir" value={`€${agadir4.avg}`} sub={`vs €${gc4.avg} en GC (−${diff4}%)`} color="#6D28D9"/>
+        <Metric label="Rating medio 4★ GC" value={gc4.rating} sub={`vs ${agadir4.rating} Agadir · ventaja GC`} color={C.teal}/>
+        <Metric label="Hoteles 3-4★ Agadir" value={agadir3.count+agadir4.count} sub={`${agadir3.withPrice+agadir4.withPrice} con precio visible`} color="#2563EB" small/>
+      </div>
+
+      {/* ── Comparativa de precios ────────────────────────────── */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24,marginBottom:32}}>
+        <Card title="Hoteles 3 estrellas" sub="Precio medio por noche (€) · 2 adultos">
+          <Bar value={agadir3.avg} max={200} color="#D97706" label="Agadir"/>
+          <Bar value={gc3.avg} max={200} color={C.teal} label="Gran Canaria"/>
+          <div style={{marginTop:16,display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8}}>
+            <div style={{textAlign:'center'}}><div style={{fontSize:10,color:C.tm}}>Mínimo</div><div style={{fontSize:15,fontWeight:700,color:C.tp}}>€{agadir3.min} <span style={{color:C.tm,fontWeight:400,fontSize:11}}>vs €{gc3.min}</span></div></div>
+            <div style={{textAlign:'center'}}><div style={{fontSize:10,color:C.tm}}>Mediana</div><div style={{fontSize:15,fontWeight:700,color:C.tp}}>€{agadir3.median} <span style={{color:C.tm,fontWeight:400,fontSize:11}}>vs €{gc3.median}</span></div></div>
+            <div style={{textAlign:'center'}}><div style={{fontSize:10,color:C.tm}}>Máximo</div><div style={{fontSize:15,fontWeight:700,color:C.tp}}>€{agadir3.max} <span style={{color:C.tm,fontWeight:400,fontSize:11}}>vs €{gc3.max}</span></div></div>
+          </div>
+        </Card>
+        <Card title="Hoteles 4 estrellas" sub="Precio medio por noche (€) · 2 adultos">
+          <Bar value={agadir4.avg} max={400} color="#6D28D9" label="Agadir"/>
+          <Bar value={gc4.avg} max={400} color={C.teal} label="Gran Canaria"/>
+          <div style={{marginTop:16,display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8}}>
+            <div style={{textAlign:'center'}}><div style={{fontSize:10,color:C.tm}}>Mínimo</div><div style={{fontSize:15,fontWeight:700,color:C.tp}}>€{agadir4.min} <span style={{color:C.tm,fontWeight:400,fontSize:11}}>vs €{gc4.min}</span></div></div>
+            <div style={{textAlign:'center'}}><div style={{fontSize:10,color:C.tm}}>Mediana</div><div style={{fontSize:15,fontWeight:700,color:C.tp}}>€{agadir4.median} <span style={{color:C.tm,fontWeight:400,fontSize:11}}>vs €{gc4.median}</span></div></div>
+            <div style={{textAlign:'center'}}><div style={{fontSize:10,color:C.tm}}>Máximo</div><div style={{fontSize:15,fontWeight:700,color:C.tp}}>€{agadir4.max} <span style={{color:C.tm,fontWeight:400,fontSize:11}}>vs €{gc4.max}</span></div></div>
+          </div>
+        </Card>
+      </div>
+
+      {/* ── Zonas de Agadir ──────────────────────────────────── */}
+      <Card title="Zonas hoteleras de Agadir" sub="Distribución de oferta y precio medio por zona" style={{marginBottom:32}}>
+        <div style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse'}}>
+            <thead><tr>
+              <Th>Zona</Th><Th right>Hoteles</Th><Th right>Avg 3★</Th><Th right>Avg 4★</Th><Th>Top Hotel</Th><Th right>Rating</Th>
+            </tr></thead>
+            <tbody>
+              {zones.map(z=>(
+                <tr key={z.name}>
+                  <Td bold>{z.name}</Td>
+                  <Td right>{z.hotels}</Td>
+                  <Td right>€{z.avg3}</Td>
+                  <Td right highlight>€{z.avg4}</Td>
+                  <Td dim>{z.topHotel}</Td>
+                  <Td right>{z.topRating}</Td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* ── Estacionalidad ───────────────────────────────────── */}
+      <Card title="Estacionalidad de precios" sub="Comparativa junio (verano) vs diciembre (invierno)" style={{marginBottom:32}}>
+        <div style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse'}}>
+            <thead><tr>
+              <Th>Periodo</Th><Th>Tipo</Th><Th right>Agadir 3★</Th><Th right>GC 3★</Th><Th right>Δ</Th><Th right>Agadir 4★</Th><Th right>GC 4★</Th><Th right>Δ</Th>
+            </tr></thead>
+            <tbody>
+              {seasonality.map(s=>(
+                <tr key={s.period}>
+                  <Td bold>{s.period}</Td>
+                  <Td dim>{s.label}</Td>
+                  <Td right>€{s.agadir3}</Td>
+                  <Td right>€{s.gc3}</Td>
+                  <Td right highlight>−{pct(s.agadir3,s.gc3)}%</Td>
+                  <Td right>€{s.agadir4}</Td>
+                  <Td right>€{s.gc4}</Td>
+                  <Td right highlight>−{pct(s.agadir4,s.gc4)}%</Td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* ── Rating & Reputación ──────────────────────────────── */}
+      <Card title="Rating y volumen de reseñas" sub="Ventaja reputacional de Gran Canaria" style={{marginBottom:32}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24}}>
+          <div>
+            <div style={{fontSize:12,fontWeight:600,color:C.ts,marginBottom:12}}>Rating medio (Google Maps)</div>
+            <div style={{display:'flex',gap:16}}>
+              <div style={{textAlign:'center',flex:1}}>
+                <div style={{fontSize:11,color:C.tm,marginBottom:4}}>3★ Agadir</div>
+                <div style={{fontSize:32,fontWeight:700,color:'#D97706',fontFamily:"'Playfair Display',serif"}}>{agadir3.rating}</div>
+              </div>
+              <div style={{textAlign:'center',flex:1}}>
+                <div style={{fontSize:11,color:C.tm,marginBottom:4}}>3★ GC</div>
+                <div style={{fontSize:32,fontWeight:700,color:C.teal,fontFamily:"'Playfair Display',serif"}}>{gc3.rating}</div>
+              </div>
+              <div style={{textAlign:'center',flex:1}}>
+                <div style={{fontSize:11,color:C.tm,marginBottom:4}}>4★ Agadir</div>
+                <div style={{fontSize:32,fontWeight:700,color:'#6D28D9',fontFamily:"'Playfair Display',serif"}}>{agadir4.rating}</div>
+              </div>
+              <div style={{textAlign:'center',flex:1}}>
+                <div style={{fontSize:11,color:C.tm,marginBottom:4}}>4★ GC</div>
+                <div style={{fontSize:32,fontWeight:700,color:C.teal,fontFamily:"'Playfair Display',serif"}}>{gc4.rating}</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style={{fontSize:12,fontWeight:600,color:C.ts,marginBottom:12}}>Reseñas medias por hotel</div>
+            <div style={{display:'flex',gap:16}}>
+              <div style={{textAlign:'center',flex:1}}>
+                <div style={{fontSize:11,color:C.tm,marginBottom:4}}>3★ Agadir</div>
+                <div style={{fontSize:22,fontWeight:700,color:'#D97706',fontFamily:"'Playfair Display',serif"}}>{agadir3.reviews}</div>
+              </div>
+              <div style={{textAlign:'center',flex:1}}>
+                <div style={{fontSize:11,color:C.tm,marginBottom:4}}>3★ GC</div>
+                <div style={{fontSize:22,fontWeight:700,color:C.teal,fontFamily:"'Playfair Display',serif"}}>{gc3.reviews}</div>
+              </div>
+              <div style={{textAlign:'center',flex:1}}>
+                <div style={{fontSize:11,color:C.tm,marginBottom:4}}>4★ Agadir</div>
+                <div style={{fontSize:22,fontWeight:700,color:'#6D28D9',fontFamily:"'Playfair Display',serif"}}>{agadir4.reviews}</div>
+              </div>
+              <div style={{textAlign:'center',flex:1}}>
+                <div style={{fontSize:11,color:C.tm,marginBottom:4}}>4★ GC</div>
+                <div style={{fontSize:22,fontWeight:700,color:C.teal,fontFamily:"'Playfair Display',serif"}}>{gc4.reviews}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* ── Conclusiones estratégicas ────────────────────────── */}
+      <Insight type="info"><strong>Ventaja de Agadir:</strong> Precios significativamente más bajos en ambas categorías. Taghazout ofrece el mejor ratio calidad-precio para surf & boutique. La zona centro es la más económica.</Insight>
+      <Insight type="success"><strong>Ventaja de Gran Canaria:</strong> Ratings más altos (+0.3 en 3★, +0.4 en 4★), volumen de reseñas 3-4x mayor (mayor confianza del turista), infraestructura consolidada y conectividad aérea europea superior.</Insight>
+      <Insight type="warning"><strong>Riesgo competitivo:</strong> Agadir está invirtiendo fuerte en nueva planta hotelera (Hyatt, Sofitel, Fairmont). La brecha de precio del 45% en 3★ es difícil de justificar solo con rating. Relaxia debe reforzar su propuesta de valor (todo incluido, experiencia, reputación) para competir.</Insight>
+    </div>
+  );
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────
 const NAV_SECTIONS=[
   {id:'overview',  label:'Resumen'},
@@ -1680,6 +1862,7 @@ const NAV_SECTIONS=[
   {id:'reputation',label:'Reputación'},
   {id:'visibility',label:'Posicionamiento'},
   {id:'market',    label:'Mercado'},
+  {id:'agadir',    label:'Agadir'},
   {id:'plan',      label:'Plan de acción'},
 ];
 
@@ -1783,7 +1966,7 @@ function App(){
   const [active,setActive]=useState('cover');
 
   useEffect(()=>{
-    const ALL_IDS=['cover','overview','prices','reputation','visibility','events','market','property','voice','plan'];
+    const ALL_IDS=['cover','overview','prices','reputation','visibility','events','market','agadir','property','voice','plan'];
     const obs=new IntersectionObserver(
       entries=>entries.forEach(e=>{ if(e.isIntersecting) setActive(e.target.id); }),
       {rootMargin:'-58px 0px -50% 0px',threshold:0}
@@ -1802,6 +1985,7 @@ function App(){
       <SectionWrap id="visibility" alt><Visibility/></SectionWrap>
       <SectionWrap id="events"><Events/></SectionWrap>
       <SectionWrap id="market" alt><Market/></SectionWrap>
+      <SectionWrap id="agadir" alt><AgadirComparison/></SectionWrap>
       <SectionWrap id="property"><Property/></SectionWrap>
       <SectionWrap id="voice" alt><Voice/></SectionWrap>
       <SectionWrap id="plan"><ActionPlan/></SectionWrap>
